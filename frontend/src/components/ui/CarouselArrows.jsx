@@ -3,8 +3,8 @@ import { useCallback, useEffect, useState } from 'react'
 
 // eslint-disable-next-line react-refresh/only-export-components
 export const usePrevNextButtons = (emblaApi) => {
-  const [prevBtnDisabled, setPrevBtnDisabled] = useState(true);
-  const [nextBtnDisabled, setNextBtnDisabled] = useState(true);
+  const [prevBtnDisabled, setPrevBtnDisabled] = useState(false);
+  const [nextBtnDisabled, setNextBtnDisabled] = useState(false);
 
   const onPrevButtonClick = useCallback(() => {
     if (!emblaApi) return
@@ -42,14 +42,13 @@ export const usePrevNextButtons = (emblaApi) => {
   }
 }
 
-export const PrevButton = (props) => {
-  const { disabled, ...restProps } = props
+export const PrevButton = ({ disabled, onClick }) => {
 
   return (
     <button
       type='button' 
-      {...restProps}
-      disabled={disabled} 
+      onClick={onClick} 
+      disabled={disabled}
       className={`absolute left-2 md:left-4 top-1/2 -translate-y-1/2 z-10 hidden group-hover/carousel:disabled:hidden group-hover/carousel:flex items-center justify-center bg-black/90 hover:bg-[#fbbf24] text-white hover:text-black p-3 rounded-full transition-all duration-300 shadow-xl hover:scale-110 cursor-pointer`}
       aria-label="Voltar slides"
     >
@@ -58,13 +57,10 @@ export const PrevButton = (props) => {
   )
 }
 
-export const NextButton = (props) => {
-  const { disabled, ...restProps } = props
-
+export const NextButton = ({ disabled, onClick }) => {
   return (
     <button
-      type='button' 
-      {...restProps}
+      onClick={onClick} 
       disabled={disabled}
       className={`absolute right-2 md:right-4 top-1/2 -translate-y-1/2 z-10 hidden group-hover/carousel:disabled:hidden group-hover/carousel:flex items-center justify-center bg-black/90 hover:bg-[#fbbf24] text-white hover:text-black p-3 rounded-full transition-all duration-300 shadow-xl hover:scale-110 cursor-pointer`}
       aria-label="Avançar slides"

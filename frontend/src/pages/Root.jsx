@@ -8,7 +8,7 @@ export function Root() {
       <Outlet />
       <footer className="bg-black/50 border-t border-white/10 mt-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+          {/* <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
             <div>
               <h3 className="font-medium text-gray-900 dark:text-white mb-4">Explorar</h3>
               <ul className="space-y-2 text-gray-500 dark:text-gray-400 text-sm">
@@ -41,9 +41,9 @@ export function Root() {
                 <li><a href="#" className="hover:text-[#fbbf24] transition-colors">Cookies</a></li>
               </ul>
             </div>
-          </div>
+          </div> */}
           <div className="border-t border-white/10 mt-8 pt-8 text-center text-gray-500 dark:text-gray-400 text-sm">
-            © 2024 CineDB. Todos os direitos reservados.
+            © 2026 CineDB. Todos os direitos reservados.
           </div>
         </div>
       </footer>
