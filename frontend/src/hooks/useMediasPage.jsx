@@ -1,6 +1,6 @@
 import { useFetchMedia } from "./useFetchMedia";
 
-export const useMoveiMedia = (mediaEndpoint, genreEndpoint) => {
+export const useMediasPage = (mediaEndpoint, genreEndpoint) => {
   const { data: mediaData, error: errM, loading: loadM } = useFetchMedia(mediaEndpoint);
   const { data: genreData, error: errGL, loading: loadGL } = useFetchMedia(genreEndpoint);
 

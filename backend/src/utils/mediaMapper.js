@@ -11,7 +11,7 @@ const toMinSummary = (media, mediaType) => {
     rating: media.vote_average ? Number(media.vote_average.toFixed(1)) : 0,
     voteCount: media.vote_count || 0,
     genreIds: media.genre_ids || [],
-    mediaType: mediaType
+    mediaType: mediaType || media.media_type
   };
 };
 

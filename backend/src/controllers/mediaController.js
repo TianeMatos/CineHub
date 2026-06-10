@@ -1,4 +1,4 @@
-const { getTopMovies, getTopSeries, getTrendings, getTopRated, getDiscover, getGenreList, getMediaDetails, getMediaSimilar, getMediaVideos, getMediaCredits } = require("../services/mediaService");
+const { getTopMovies, getTopSeries, getTrendings, getTopRated, getDiscover, getGenreList, getMediaDetails, getMediaSimilar, getMediaVideos, getMediaCredits, getSearch } = require("../services/mediaService");
 const AppError = require("../utils/AppError");
 const popularFilter = require("../utils/popularFilter");
 const shuffle = require("../utils/shuffleMedia");
@@ -83,6 +83,21 @@ const mediaController = {
     const genreId = genre ? Number(genre) : 0;
     try {
       const media = await getDiscover(mediaType, pageNumber, genreId, sortBy);
+
+      res.status(200).json(media);
+    } catch (error) {
+      console.log("Error: ", error);
+      next(error);
+    }
+  },
+
+  //* OK
+  search: async (req, res, next) => {
+    const { page = 1, query } = req.query;
+
+    const pageNumber = Number(page);
+    try {
+      const media = await getSearch(pageNumber, query);
 
       res.status(200).json(media);
     } catch (error) {

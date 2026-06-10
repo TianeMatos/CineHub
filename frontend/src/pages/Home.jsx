@@ -6,8 +6,7 @@ import { LoadingScreen } from "../components/ui/LoadingScreen";
 import { ErrorScreen } from "../components/ui/ErrorScreen";
 import { MediaCarousel } from "../components/MediaCarousel";
 
-// TODO: Consertar as setas do carousel
-// TODO: Consertar nome dos hooks e componentes
+// TODO: implementar a busca, SearchPage...
 // TODO: Consertar a estrutura dos hooks e paginas
 
 export const Home = () => {
@@ -24,7 +23,7 @@ export const Home = () => {
         <section>
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">Em Alta</h2>
-            <Link to={`/trendings`} className="flex items-center gap-2 text-[#fbbf24] hover:text-[#f59e0b] transition-colors">
+            <Link to={`/movies`} className="flex items-center gap-2 text-[#fbbf24] hover:text-[#f59e0b] transition-colors">
               Ver Todos
               <ChevronRight className="w-5 h-5" />
             </Link>
@@ -51,8 +50,8 @@ export const Home = () => {
             <p className="text-gray-500 dark:text-gray-400 mb-6">
               Explore nossa vasta coleção de filmes e séries. Encontre informações detalhadas, avaliações, trailers e muito mais.
             </p>
-            <Link to="/filmes" className="inline-block bg-[#fbbf24] hover:bg-[#f59e0b] text-black px-6 py-3 rounded-lg font-medium transition-colors">
-              Explorar Catálogo
+            <Link to="/movies" className="inline-block bg-[#fbbf24] hover:bg-[#f59e0b] text-black px-6 py-3 rounded-lg font-medium transition-colors">
+              Explorar Catálogo de Filmes
             </Link>
           </div>
         </section>

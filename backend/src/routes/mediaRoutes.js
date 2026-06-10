@@ -13,6 +13,9 @@ router.get('/:mediaType/topRated', cacheMiddleware(86400), mediaController.topRa
 //* GET /api/media/:mediaType/discover
 router.get('/:mediaType/discover', mediaController.discover);
 
+//* GET /api/media/search
+router.get('/search', mediaController.search);
+
 //* GET /api/media/:mediaType/genres -> Busca a lista oficial de gêneros e IDs do TMDB 
 router.get('/:mediaType/genres', cacheMiddleware(86400), mediaController.genresList);
 

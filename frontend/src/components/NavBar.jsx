@@ -20,9 +20,9 @@ export const Navbar = () => {
 
             <div className="hidden md:flex items-center gap-6">
               <Link
-                to="/filmes"
+                to="/movies"
                 className={`transition-colors flex items-center gap-2 ${
-                  isActive('/filmes') ? 'text-[#fbbf24]' : 'text-gray-900 dark:text-white hover:text-[#fbbf24]'
+                  isActive('/movies') ? 'text-[#fbbf24]' : 'text-gray-900 dark:text-white hover:text-[#fbbf24]'
                 }`}
               >
                 <Film className="w-4 h-4" />
@@ -38,9 +38,9 @@ export const Navbar = () => {
                 Séries
               </Link>
               <Link
-                to="/top-rated"
+                to="/topRated"
                 className={`transition-colors flex items-center gap-2 ${
-                  isActive('/top-rated') ? 'text-[#fbbf24]' : 'text-gray-900 dark:text-white hover:text-[#fbbf24]'
+                  isActive('/topRated') ? 'text-[#fbbf24]' : 'text-gray-900 dark:text-white hover:text-[#fbbf24]'
                 }`}
               >
                 <Star className="w-4 h-4" />

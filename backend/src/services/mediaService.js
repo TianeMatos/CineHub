@@ -3,7 +3,7 @@ const mediaMapper = require("../utils/mediaMapper");
 const popularFilter = require("../utils/popularFilter");
 const shuffleMedia = require("../utils/shuffleMedia");
 
-//* OK
+//* OK not using
 const getTop = async (mediaType) => {
   const { data } = await tmdbClient.get(`/${mediaType}/popular`, { params: { language: 'pt-BR', region: 'BR' } });
 
@@ -64,6 +64,19 @@ const getDiscover = async (mediaType, page, genre, sortBy) => {
   return { results: data.results.map((media) => mediaMapper.toMinSummary(media, mediaType)), dataInfo };
 }
 
+const getSearch = async (page, query) => {
+  const { data } = await tmdbClient.get(`/search/multi`, { 
+    params: { 
+      language: 'pt-BR', 
+      page,
+      query
+    } 
+  });
+  const dataInfo = {page: data.page, totalPages: data.total_pages, totalResults: data.total_results} 
+
+  return { results: data.results.map((media) => mediaMapper.toMinSummary(media)), dataInfo };
+}
+
 //* OK
 const getMediaDetails = async (mediaType, id) => {
   const { data } = await tmdbClient.get(`/${mediaType}/${id}`, { 
@@ -113,4 +126,4 @@ const getMediaVideos = async (mediaType, id) => {
   return trailer;
 }
 
-module.exports = { getTop, getTrendings, getTopRated, getDiscover, getGenreList, getMediaDetails, getMediaCredits, getMediaSimilar, getMediaVideos }
+module.exports = { getTop, getTrendings, getTopRated, getDiscover, getSearch, getGenreList, getMediaDetails, getMediaCredits, getMediaSimilar, getMediaVideos }

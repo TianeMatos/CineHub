@@ -3,9 +3,9 @@ import { Filter } from "lucide-react";
 import { LoadingScreen } from "../components/ui/LoadingScreen";
 import { useState } from "react";
 import { ErrorScreen } from "../components/ui/ErrorScreen";
-import { useMoveiMedia } from "../hooks/useMediaPage";
+import { useMediasPage } from "../hooks/useMediasPage";
 
-export function MediaPage({ mediaType, title, description }) {
+export function MediasPage({ mediaType, title, description }) {
   const [selectedGenre, setSelectedGenre] = useState({ id: "all", name: "Todos" });
   const [sortBy, setSortBy] = useState("popularity.desc");
   const [currentPage, setCurrentPage] = useState(1);
@@ -14,10 +14,8 @@ export function MediaPage({ mediaType, title, description }) {
   const mediaEndpoint = `/${mediaType}/discover?page=${currentPage}&sortBy=${sortBy}${genreParam}`;
   const genreEndpoint = `/${mediaType}/genres`
 
-  const { mediaData, genres, loading, error } = useMoveiMedia(mediaEndpoint, genreEndpoint);
-  const totalPages = mediaData?.dataInfo?.totalPages
-    ? Math.min(mediaData?.dataInfo?.totalPages, mediaData?.dataInfo?.totalPages)
-    : 1;
+  const { mediaData, genres, loading, error } = useMediasPage(mediaEndpoint, genreEndpoint);
+  const totalPages = Math.min(mediaData?.dataInfo?.totalPages ?? 1, 500);
 
   if (loading) return <LoadingScreen key={`LoadingScreen`} />;
   if (error) return <ErrorScreen key={`ErrorScreen`} message={error} />;
@@ -98,7 +96,10 @@ export function MediaPage({ mediaType, title, description }) {
           <div className="flex items-center gap-2">
             <button
               disabled={currentPage === 1}
-              onClick={() => setCurrentPage((prev) => prev - 1)}
+              onClick={() => {
+                setCurrentPage((prev) => prev - 1);
+                window.scrollTo({ top: 80, behavior: "smooth" });
+              }}
               className="px-4 py-2 bg-[#1f1f1f] hover:bg-[#2a2a2a] text-gray-900 dark:text-white rounded-lg transition-colors"
             >
               Anterior
@@ -110,7 +111,10 @@ export function MediaPage({ mediaType, title, description }) {
 
             <button
               disabled={currentPage === totalPages}
-              onClick={() => setCurrentPage((prev) => prev + 1)}
+              onClick={() => {
+                setCurrentPage((prev) => prev + 1);
+                window.scrollTo({ top: 80, behavior: "smooth" });
+              }}
               className="px-4 py-2 bg-[#1f1f1f] hover:bg-[#2a2a2a] text-gray-900 dark:text-white rounded-lg transition-colors"
             >
               Próximo
