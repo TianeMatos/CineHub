@@ -4,31 +4,35 @@ const cacheMiddleware = require("../middlewares/cacheMiddleware");
 
 const router = Router();
 
-//* GET /api/media/:mediaType/trending  -> /trending/all/week
-router.get('/:mediaType/trendings', cacheMiddleware(86400), mediaController.trendings);
+const HOUR  = 60 * 60;
+const DAY   = 60 * 60 * 24;
+const WEEK  = 60 * 60 * 24 * 7;
 
-//* GET /api/media/:mediaType/top-rated -> Busca os dados de /movie/top_rated ou /tv/top_rated no TMDB
-router.get('/:mediaType/topRated', cacheMiddleware(86400), mediaController.topRated);
-
-//* GET /api/media/:mediaType/discover
-router.get('/:mediaType/discover', mediaController.discover);
-
-//* GET /api/media/search
+// GET /api/media/search
 router.get('/search', mediaController.search);
 
-//* GET /api/media/:mediaType/genres -> Busca a lista oficial de gêneros e IDs do TMDB 
-router.get('/:mediaType/genres', cacheMiddleware(86400), mediaController.genresList);
+// GET /api/media/:mediaType/trending 
+router.get('/:mediaType/trendings', cacheMiddleware(HOUR * 6), mediaController.trendings);
 
-//* GET /api/media/:mediaType/:id/details -> Busca Detalhes de um filme ou serie.
-router.get('/:mediaType/:id/details', mediaController.mediaDetails);
+// GET /api/media/:mediaType/topRated 
+router.get('/:mediaType/topRated', cacheMiddleware(DAY), mediaController.topRated);
 
-//* GET /api/media/:mediaType/:id/similar -> Busca similares de um filme ou serie.
-router.get('/:mediaType/:id/similar', mediaController.mediaSimilar);
+// GET /api/media/:mediaType/discover
+router.get('/:mediaType/discover', mediaController.discover);
 
-//* GET /api/media/:mediaType/:id/trailer
-router.get('/:mediaType/:id/trailer', mediaController.mediaTrailer);
+// GET /api/media/:mediaType/genres 
+router.get('/:mediaType/genres', cacheMiddleware(WEEK), mediaController.genresList);
 
-//* GET /api/media/:mediaType/:id/credits
-router.get('/:mediaType/:id/credits', mediaController.mediaCredits);
+// GET /api/media/:mediaType/:id/details
+router.get('/:mediaType/:id/details', cacheMiddleware(DAY), mediaController.mediaDetails);
+
+// GET /api/media/:mediaType/:id/similar 
+router.get('/:mediaType/:id/similar', cacheMiddleware(DAY), mediaController.mediaSimilar);
+
+// GET /api/media/:mediaType/:id/trailer
+router.get('/:mediaType/:id/trailer', cacheMiddleware(WEEK), mediaController.mediaTrailer);
+
+// GET /api/media/:mediaType/:id/credits
+router.get('/:mediaType/:id/credits', cacheMiddleware(WEEK), mediaController.mediaCredits);
 
 module.exports = router;
