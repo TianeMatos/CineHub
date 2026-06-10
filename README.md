@@ -21,6 +21,9 @@ O CineHub é uma plataforma de catálogo de entretenimento focada em performance
 
 ## Tecnologias Usadas
 
+### Design & Planejamento
+* Figma (Prototipagem de alta fidelidade e guia de estilos/UI)
+
 ### Frontend
 * React 19 (com React Router)
 * Vite
