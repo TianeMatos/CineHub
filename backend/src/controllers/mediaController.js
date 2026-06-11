@@ -12,7 +12,7 @@ const mediaController = {
   //   }
 
   //   try {
-  //     const media = await getTopMovies(mediaType);
+  //     const media = await getTopMedia(mediaType);
 
   //     const shuffledPopular = shuffle(media);
   //     res.json(shuffledPopular);
@@ -93,7 +93,7 @@ const mediaController = {
 
   //* OK
   search: async (req, res, next) => {
-    const { page = 1, query } = req.query;
+    const { page = 1, q: query } = req.query;
 
     const pageNumber = Number(page);
     try {

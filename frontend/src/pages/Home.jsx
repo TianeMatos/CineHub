@@ -6,8 +6,9 @@ import { LoadingScreen } from "../components/ui/LoadingScreen";
 import { ErrorScreen } from "../components/ui/ErrorScreen";
 import { MediaCarousel } from "../components/MediaCarousel";
 
-// TODO: implementar a busca, SearchPage...
+// TODO: implementar a busca, SearchPage... - Metade
 // TODO: Consertar a estrutura dos hooks e paginas
+// TODO: Implementar o componente Pagination
 
 export const Home = () => {
   const { loading, error, trendings, topRated, featuredMedia } = useHomeMedia();

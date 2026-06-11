@@ -13,7 +13,7 @@ export const Pagination = ({ page, totalPages, onPageChange }) => {
         <ChevronLeft className="w-4 h-4" />
       </button>
 
-      {pages.map((p) => (
+      {pages <= 5 ? (pages.map((p) => (
         <button
           key={p}
           onClick={() => onPageChange(p)}
@@ -25,7 +25,11 @@ export const Pagination = ({ page, totalPages, onPageChange }) => {
         >
           {p}
         </button>
-      ))}
+      ))) : (
+        <span className="text-sm text-gray-400 px-2">
+          Página <b>{page}</b> de {totalPages}
+        </span>
+      )}
 
       <button
         onClick={() => onPageChange(page + 1)}

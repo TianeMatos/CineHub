@@ -15,8 +15,8 @@ export const useFetchMedia = (url) => {
       } catch (err) {
         console.error("Erro capturado no React:", err);
         const mensagemDeErro = err.response?.data?.error || "Erro ao carregar os dados.";
-        
         setError(mensagemDeErro);
+
       } finally {
         setLoading(false);
       }

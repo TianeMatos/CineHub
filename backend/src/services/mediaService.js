@@ -4,7 +4,7 @@ const popularFilter = require("../utils/popularFilter");
 const shuffleMedia = require("../utils/shuffleMedia");
 
 //* OK not using
-const getTop = async (mediaType) => {
+const getTopMedia = async (mediaType) => {
   const { data } = await tmdbClient.get(`/${mediaType}/popular`, { params: { language: 'pt-BR', region: 'BR' } });
 
   return data.results.slice(0, 10).map((media) => mediaMapper.toMinSummary(media, mediaType));
@@ -65,16 +65,25 @@ const getDiscover = async (mediaType, page, genre, sortBy) => {
 }
 
 const getSearch = async (page, query) => {
-  const { data } = await tmdbClient.get(`/search/multi`, { 
+  const { data, request } = await tmdbClient.get(`/search/multi`, { 
     params: { 
       language: 'pt-BR', 
       page,
       query
     } 
   });
-  const dataInfo = {page: data.page, totalPages: data.total_pages, totalResults: data.total_results} 
+  console.log(request.path);
 
-  return { results: data.results.map((media) => mediaMapper.toMinSummary(media)), dataInfo };
+  const results = data.results.filter((media) => media.media_type === 'movie' || media.media_type === 'tv').map((media) => mediaMapper.toMinSummary(media));
+
+  return { 
+    results, 
+    dataInfo: {
+      page: data.page, 
+      totalPages: data.total_pages, 
+      totalResults: data.total_results
+    }
+  };
 }
 
 //* OK
@@ -126,4 +135,4 @@ const getMediaVideos = async (mediaType, id) => {
   return trailer;
 }
 
-module.exports = { getTop, getTrendings, getTopRated, getDiscover, getSearch, getGenreList, getMediaDetails, getMediaCredits, getMediaSimilar, getMediaVideos }
+module.exports = { getTopMedia, getTrendings, getTopRated, getDiscover, getSearch, getGenreList, getMediaDetails, getMediaCredits, getMediaSimilar, getMediaVideos }

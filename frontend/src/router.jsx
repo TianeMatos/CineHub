@@ -4,6 +4,7 @@ import { Home } from "./pages/Home";
 import { MediasPage } from "./pages/MediasPage";
 import { TopRated } from "./pages/TopRated";
 import { MediaPageDetails } from "./pages/MediaPageDetails";
+import { SearchPage } from "./pages/Search";
 // import { NotFound } from "./pages/NotFound";
 
 export const router = createBrowserRouter([
@@ -16,6 +17,7 @@ export const router = createBrowserRouter([
       { path: "series", element: <MediasPage mediaType={`tv`} title={`Séries`} description={`Descubra as melhores séries de todos os tempos`} /> },                 
       { path: "topRated", element: <TopRated /> },           
       { path: "/:mediaType/:id", element: <MediaPageDetails /> },     
+      { path: "/search", element: <SearchPage /> },  
       // { path: "*", element: <NotFound /> },
     ],
   },

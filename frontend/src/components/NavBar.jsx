@@ -1,5 +1,6 @@
-import { Search, Film, Tv, Star, Menu } from "lucide-react";
+import { Film, Tv, Star } from "lucide-react";
 import { Link, useLocation } from "react-router";
+import { SearchBar } from "./SearchBar";
 
 export const Navbar = () => {
   const location = useLocation();
@@ -50,7 +51,7 @@ export const Navbar = () => {
           </div>
 
           <div className="flex items-center gap-4">
-            <div className="hidden sm:flex items-center bg-[#1f1f1f] rounded-lg px-4 py-2 w-64">
+            {/* <div className="hidden sm:flex items-center bg-[#1f1f1f] rounded-lg px-4 py-2 w-64">
               <Search className="w-4 h-4 text-gray-500 dark:text-gray-400 mr-2" />
               <input
                 type="text"
@@ -60,7 +61,8 @@ export const Navbar = () => {
             </div>
             <button className="md:hidden text-gray-900 dark:text-white">
               <Menu className="w-6 h-6" />
-            </button>
+            </button> */}
+            <SearchBar key={"search"} />
           </div>
         </div>
       </div>
