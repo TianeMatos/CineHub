@@ -4,20 +4,21 @@ const popularFilter = require("../utils/popularFilter");
 const shuffleMedia = require("../utils/shuffleMedia");
 
 //* OK not using
-const getTopMedia = async (mediaType) => {
+const getPopular = async (mediaType) => {
   const { data } = await tmdbClient.get(`/${mediaType}/popular`, { params: { language: 'pt-BR', region: 'BR' } });
 
-  return data.results.slice(0, 10).map((media) => mediaMapper.toMinSummary(media, mediaType));
+  const filtered = popularFilter(data.results); 
+  const shuffled = shuffleMedia(filtered); 
+
+  return shuffled?.slice(0, 10).map((media) => mediaMapper.toMinSummary(media, mediaType));
 }
 
 //* OK
 const getTrendings = async (mediaType) => {
   const { data } = await tmdbClient.get(`/trending/${mediaType}/week`, { params: { language: 'pt-BR' } });
   const rawResults = data?.results ?? [];
-
-  const filtered = popularFilter(rawResults); 
-  // const shuffled = shuffleMedia(filtered);    
-  const mapped = filtered.slice(0, 10).map((media) => mediaMapper.toMinSummary(media, mediaType)); 
+   
+  const mapped = rawResults.slice(0, 10).map((media) => mediaMapper.toMinSummary(media, mediaType)); 
 
   return mapped;
 }
@@ -64,6 +65,7 @@ const getDiscover = async (mediaType, page, genre, sortBy) => {
   return { results: data.results.map((media) => mediaMapper.toMinSummary(media, mediaType)), dataInfo };
 }
 
+//* OK
 const getSearch = async (page, query) => {
   const { data, request } = await tmdbClient.get(`/search/multi`, { 
     params: { 
@@ -88,12 +90,14 @@ const getSearch = async (page, query) => {
 
 //* OK
 const getMediaDetails = async (mediaType, id) => {
-  const { data } = await tmdbClient.get(`/${mediaType}/${id}`, { 
+  const { data, request } = await tmdbClient.get(`/${mediaType}/${id}`, { 
     params: { 
-      language: 'pt-BR'
-    } 
+      language: 'pt-BR',
+      ...(mediaType === "tv" && { "append_to_response": "videos,credits,recommendations" }),
+      ...(mediaType === "movie" && { "append_to_response": "videos,credits,crew,recommendations" })
+    },
   });
-  const mediaDetails = mediaMapper.toFullDetails(data)
+  const mediaDetails = mediaMapper.toFullDetails(data, mediaType)
 
   return mediaDetails;
 }
@@ -135,4 +139,4 @@ const getMediaVideos = async (mediaType, id) => {
   return trailer;
 }
 
-module.exports = { getTopMedia, getTrendings, getTopRated, getDiscover, getSearch, getGenreList, getMediaDetails, getMediaCredits, getMediaSimilar, getMediaVideos }
+module.exports = { getPopular, getTrendings, getTopRated, getDiscover, getSearch, getGenreList, getMediaDetails, getMediaCredits, getMediaSimilar, getMediaVideos }

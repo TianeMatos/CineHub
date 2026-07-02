@@ -4,7 +4,6 @@ import { MediaCard } from "./MediaCard";
 import { usePrevNextButtons, NextButton, PrevButton } from "./ui/CarouselArrows";
 
 export const MediaCarousel = ({ medias }) => {
-
   const [emblaRef, emblaApi] = useEmblaCarousel({
     align: "start",
     loop: true,

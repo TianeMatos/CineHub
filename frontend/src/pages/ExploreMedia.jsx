@@ -3,25 +3,34 @@ import { Filter } from "lucide-react";
 import { LoadingScreen } from "../components/ui/LoadingScreen";
 import { useState } from "react";
 import { ErrorScreen } from "../components/ui/ErrorScreen";
-import { useMediasPage } from "../hooks/useMediasPage";
+import { useExploreMedia } from "../hooks/useExploreMedia";
+import { Pagination } from "../components/ui/Pagination";
+import { useSearchParams } from "react-router";
+import { ScrollToTop } from "../components/ui/ScrollToTop";
 
-export function MediasPage({ mediaType, title, description }) {
+export const ExploreMedia = ({ mediaType, title, description }) => {
   const [selectedGenre, setSelectedGenre] = useState({ id: "all", name: "Todos" });
   const [sortBy, setSortBy] = useState("popularity.desc");
-  const [currentPage, setCurrentPage] = useState(1);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const currentPage = Number(searchParams.get("page")) || 1;
 
   const genreParam = selectedGenre.id !== "all" ? `&genre=${selectedGenre.id}` : "";
   const mediaEndpoint = `/${mediaType}/discover?page=${currentPage}&sortBy=${sortBy}${genreParam}`;
-  const genreEndpoint = `/${mediaType}/genres`
+  const genreEndpoint = `/${mediaType}/genres`;
 
-  const { mediaData, genres, loading, error } = useMediasPage(mediaEndpoint, genreEndpoint);
+  const { mediaData, genres, loading, error } = useExploreMedia(mediaEndpoint, genreEndpoint);
   const totalPages = Math.min(mediaData?.dataInfo?.totalPages ?? 1, 500);
 
   if (loading) return <LoadingScreen key={`LoadingScreen`} />;
   if (error) return <ErrorScreen key={`ErrorScreen`} message={error} />;
 
+  const handlePageChange = (p) => {
+    setSearchParams({page: p});
+  }
+
   return (
     <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <ScrollToTop />
       <div className="mb-8">
         <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-2">
           {title}
@@ -38,7 +47,7 @@ export function MediasPage({ mediaType, title, description }) {
             value={sortBy}
             onChange={(e) => {
               setSortBy(e.target.value);
-              setCurrentPage(1);
+              setSearchParams(1);
             }}
             className="bg-transparent border-none outline-none w-full text-sm text-gray-900 dark:text-white cursor-pointer"
           >
@@ -62,7 +71,7 @@ export function MediasPage({ mediaType, title, description }) {
             key={genre.id}
             onClick={() => {
               setSelectedGenre(genre);
-              setCurrentPage(1);
+              setSearchParams(1);
             }}
             className={`px-4 py-2 mb-1 rounded-lg whitespace-nowrap transition-colors ${
               genre.id === selectedGenre.id
@@ -75,7 +84,7 @@ export function MediasPage({ mediaType, title, description }) {
         ))}
       </div>
 
-      {/* //* Pagination + Data */}
+      {/* //* Data */}
       {mediaData?.results?.length > 0 ? (
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 md:gap-6">
           {mediaData?.results.map((media) => (
@@ -91,36 +100,7 @@ export function MediasPage({ mediaType, title, description }) {
       )}
 
       {/* //* Pagination */}
-      {totalPages > 1 && (
-        <div className="flex justify-center mt-12">
-          <div className="flex items-center gap-2">
-            <button
-              disabled={currentPage === 1}
-              onClick={() => {
-                setCurrentPage((prev) => prev - 1);
-                window.scrollTo({ top: 80, behavior: "smooth" });
-              }}
-              className="px-4 py-2 bg-[#1f1f1f] hover:bg-[#2a2a2a] text-gray-900 dark:text-white rounded-lg transition-colors"
-            >
-              Anterior
-            </button>
-            
-            <span className="text-sm text-gray-400 px-2">
-              Página <b>{currentPage}</b> de {totalPages}
-            </span>
-
-            <button
-              disabled={currentPage === totalPages}
-              onClick={() => {
-                setCurrentPage((prev) => prev + 1);
-                window.scrollTo({ top: 80, behavior: "smooth" });
-              }}
-              className="px-4 py-2 bg-[#1f1f1f] hover:bg-[#2a2a2a] text-gray-900 dark:text-white rounded-lg transition-colors"
-            >
-              Próximo
-            </button>
-          </div>
-        </div>
+      {totalPages > 1 && ( <Pagination key={`${mediaType}-Pagination`} page={currentPage} onPageChange={handlePageChange} totalPages={totalPages} />
       )}
     </main>
   );

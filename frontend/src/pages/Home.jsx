@@ -6,12 +6,11 @@ import { LoadingScreen } from "../components/ui/LoadingScreen";
 import { ErrorScreen } from "../components/ui/ErrorScreen";
 import { MediaCarousel } from "../components/MediaCarousel";
 
-// TODO: implementar a busca, SearchPage... - Metade
+// TODO: Continuar a pagina com os detalhes de um serie  
 // TODO: Consertar a estrutura dos hooks e paginas
-// TODO: Implementar o componente Pagination
 
 export const Home = () => {
-  const { loading, error, trendings, topRated, featuredMedia } = useHomeMedia();
+  const { loading, error, trendings, featuredMedia, popularMovies, popularSeries } = useHomeMedia();
 
   if (loading) return <LoadingScreen key={`LoadingScreen`} />
   if (error) return  <ErrorScreen key={`ErrorScreen`} message={error} />
@@ -20,7 +19,7 @@ export const Home = () => {
     <>
       <HeroBanner key={`featuredMedia-${featuredMedia?.id}`} {...featuredMedia} />
 
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-16">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-10 py-12 space-y-16">
         <section>
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">Em Alta</h2>
@@ -34,13 +33,24 @@ export const Home = () => {
 
         <section>
           <div className="flex items-center justify-between mb-6">
-            <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">Melhores Avaliados</h2>
-            <Link to={`/topRated`} className="flex items-center gap-2 text-[#fbbf24] hover:text-[#f59e0b] transition-colors">
+            <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">Series Populares</h2>
+            <Link to={`/series`} className="flex items-center gap-2 text-[#fbbf24] hover:text-[#f59e0b] transition-colors">
               Ver Todos
               <ChevronRight className="w-5 h-5" />
             </Link>
           </div>
-          <MediaCarousel key={`topRated`} medias={topRated} />
+          <MediaCarousel key={`popularSeries`} medias={popularSeries} />
+        </section>
+
+        <section>
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">Filmes Populares</h2>
+            <Link to={`/movies`} className="flex items-center gap-2 text-[#fbbf24] hover:text-[#f59e0b] transition-colors">
+              Ver Todos
+              <ChevronRight className="w-5 h-5" />
+            </Link>
+          </div>
+          <MediaCarousel key={`popularMovies`} medias={popularMovies} />
         </section>
 
         <section className="bg-linear-to-r from-[#fbbf24]/10 to-transparent rounded-2xl p-8 md:p-12 border border-[#fbbf24]/20">

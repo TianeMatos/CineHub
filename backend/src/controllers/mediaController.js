@@ -1,37 +1,27 @@
-const { getTopMovies, getTopSeries, getTrendings, getTopRated, getDiscover, getGenreList, getMediaDetails, getMediaSimilar, getMediaVideos, getMediaCredits, getSearch } = require("../services/mediaService");
+const { getPopular, getTopSeries, getTrendings, getTopRated, getDiscover, getGenreList, getMediaDetails, getMediaSimilar, getMediaVideos, getMediaCredits, getSearch } = require("../services/mediaService");
 const AppError = require("../utils/AppError");
 const popularFilter = require("../utils/popularFilter");
 const shuffle = require("../utils/shuffleMedia");
 
 const mediaController = {
-  // getMoviesPopular: async (req, res, next) => {
-  //   const { mediaType } = req.params;
+  //* OK
+  popularMedias: async (req, res, next) => {
+    const { mediaType } = req.params;
 
-  //   if (mediaType !== 'movie' && mediaType !== 'tv') {
-  //     return next(new AppError("Tipo de mídia inválido", 400));
-  //   }
+    if (mediaType !== 'movie' && mediaType !== 'tv') {
+      return next(new AppError("Tipo de mídia inválido", 400));
+    }
 
-  //   try {
-  //     const media = await getTopMedia(mediaType);
+    try {
+      const media = await getPopular(mediaType);
 
-  //     const shuffledPopular = shuffle(media);
-  //     res.json(shuffledPopular);
-  //   } catch (error) {
-  //     console.log("Error: ", error);
-  //     next(error);
-  //   }
-  // },
-  
-  // getSeriesPopular: async (req, res) => {
-  //   try {
-  //     const series = await getTopSeries();
-      
-  //     const shuffledPopular = shuffle(series);
-  //     res.json(shuffledPopular);
-  //   } catch (error) {
-  //     console.log("Error: ", error);
-  //   }
-  // },
+      const shuffledPopular = shuffle(media);
+      res.json(media);
+    } catch (error) {
+      console.log("Error: ", error);
+      next(error);
+    }
+  },
   
   //* OK
   trendings: async (req, res, next) => {
