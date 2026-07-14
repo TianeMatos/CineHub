@@ -3,7 +3,7 @@ import useEmblaCarousel from "embla-carousel-react";
 import { MediaCard } from "./MediaCard";
 import { usePrevNextButtons, NextButton, PrevButton } from "./ui/CarouselArrows";
 
-export const MediaCarousel = ({ medias }) => {
+export const MediaCarousel = ({ items }) => {
   const [emblaRef, emblaApi] = useEmblaCarousel({
     align: "start",
     loop: true,
@@ -20,16 +20,16 @@ export const MediaCarousel = ({ medias }) => {
   return (
 
     <div className="my-10">
-      <div className="relative w-full px-8 md:px-12 group/carousel">
+      <div className="relative w-full px-4 md:px-12 group/carousel">
         <PrevButton onClick={onPrevButtonClick} disabled={prevBtnDisabled} />
         <div className="overflow-hidden" ref={emblaRef}>
           <div className="flex -ml-4">
-            {medias.map((media) => (
+            {items && items.map((item) => (
               <div 
                 className="shrink-0 pl-4 w-1/2 sm:w-1/3 md:w-1/4 lg:w-1/5 xl:w-1/6" 
-                key={`slide-${media.id}`}
+                key={`slide-${item.id}`}
               >
-                <MediaCard {...media} />
+                <MediaCard {...item} />
               </div>
             ))}
           </div>

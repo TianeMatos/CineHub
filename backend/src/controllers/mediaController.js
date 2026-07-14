@@ -1,4 +1,4 @@
-const { getPopular, getTopSeries, getTrendings, getTopRated, getDiscover, getGenreList, getMediaDetails, getMediaSimilar, getMediaVideos, getMediaCredits, getSearch } = require("../services/mediaService");
+const { getPopular, getTopSeries, getTrendings, getTopRated, getDiscover, getGenreList, getMediaDetails, getMediaSimilar, getMediaVideos, getMediaCredits, getSearch, getSerieSeasonDetails } = require("../services/mediaService");
 const AppError = require("../utils/AppError");
 const popularFilter = require("../utils/popularFilter");
 const shuffle = require("../utils/shuffleMedia");
@@ -114,39 +114,56 @@ const mediaController = {
     }
   },
 
-  mediaCredits: async (req, res, next) => {
-    const { mediaType, id } = req.params;
+  serieSeasonDetails: async (req, res, next) => {
+    const { id, seasonNumber } = req.params;
 
-    if (mediaType !== 'movie' && mediaType !== 'tv') {
-      return next(new AppError("Tipo de mídia inválido", 400));
-    }
+    // if (mediaType !== 'movie' && mediaType !== 'tv') {
+    //   return next(new AppError("Número da Temporada inválido!", 400));
+    // }
 
     try {
-      const credits = await getMediaCredits(mediaType, id);
+      const seasonDetails = await getSerieSeasonDetails(id, seasonNumber);
 
-      res.status(200).json(credits);
+      res.status(200).json(seasonDetails);
     } catch (error) {
       console.log("Error: ", error);
       next(error);
     }
   },
 
-  mediaSimilar: async (req, res, next) => {
-    const { mediaType, id } = req.params;
+  // mediaCredits: async (req, res, next) => {
+  //   const { mediaType, id } = req.params;
 
-    if (mediaType !== 'movie' && mediaType !== 'tv') {
-      return next(new AppError("Tipo de mídia inválido", 400));
-    }
+  //   if (mediaType !== 'movie' && mediaType !== 'tv') {
+  //     return next(new AppError("Tipo de mídia inválido", 400));
+  //   }
 
-    try {
-      const silimarList = await getMediaSimilar(mediaType, id);
+  //   try {
+  //     const credits = await getMediaCredits(mediaType, id);
 
-      res.status(200).json(silimarList);
-    } catch (error) {
-      console.log("Error: ", error);
-      next(error);
-    }
-  },
+  //     res.status(200).json(credits);
+  //   } catch (error) {
+  //     console.log("Error: ", error);
+  //     next(error);
+  //   }
+  // },
+
+  // mediaSimilar: async (req, res, next) => {
+  //   const { mediaType, id } = req.params;
+
+  //   if (mediaType !== 'movie' && mediaType !== 'tv') {
+  //     return next(new AppError("Tipo de mídia inválido", 400));
+  //   }
+
+  //   try {
+  //     const silimarList = await getMediaSimilar(mediaType, id);
+
+  //     res.status(200).json(silimarList);
+  //   } catch (error) {
+  //     console.log("Error: ", error);
+  //     next(error);
+  //   }
+  // },
 
   genresList: async (req, res, next) => {
     const { mediaType } = req.params;
@@ -165,22 +182,22 @@ const mediaController = {
     }
   },
 
-  mediaTrailer: async (req, res, next) => {
-    const { mediaType, id } = req.params;
+  // mediaTrailer: async (req, res, next) => {
+  //   const { mediaType, id } = req.params;
 
-    if (mediaType !== 'movie' && mediaType !== 'tv') {
-      return next(new AppError("Tipo de mídia inválido", 400));
-    }
+  //   if (mediaType !== 'movie' && mediaType !== 'tv') {
+  //     return next(new AppError("Tipo de mídia inválido", 400));
+  //   }
 
-    try {
-      const trailer = await getMediaVideos(mediaType, id);
+  //   try {
+  //     const trailer = await getMediaVideos(mediaType, id);
 
-      res.status(200).json(trailer);
-    } catch (error) {
-      console.log("Error: ", error);
-      next(error);
-    }
-  },
+  //     res.status(200).json(trailer);
+  //   } catch (error) {
+  //     console.log("Error: ", error);
+  //     next(error);
+  //   }
+  // },
 
 }
 

@@ -80,7 +80,7 @@ export function SearchBar() {
             onChange={handleInputChange}
             onFocus={handleInputFocus}
             placeholder="Buscar filmes, séries..."
-            className="bg-transparent text-sm text-white placeholder-gray-500 outline-none w-full lg:w-80"
+            className="bg-transparent text-sm text-white placeholder-gray-500 outline-none w-full sm:w-70 md:w-57 lg:w-80"
           />
           {query && (
             <button type="button" onClick={handleClear} className="text-gray-500 hover:text-white transition-colors">

@@ -90,16 +90,28 @@ const getSearch = async (page, query) => {
 
 //* OK
 const getMediaDetails = async (mediaType, id) => {
-  const { data, request } = await tmdbClient.get(`/${mediaType}/${id}`, { 
+  const { data } = await tmdbClient.get(`/${mediaType}/${id}`, { 
     params: { 
       language: 'pt-BR',
-      ...(mediaType === "tv" && { "append_to_response": "videos,credits,recommendations" }),
-      ...(mediaType === "movie" && { "append_to_response": "videos,credits,crew,recommendations" })
+      ...(mediaType === "tv" && { "append_to_response": "content_ratings,videos,credits,recommendations" }),
+      ...(mediaType === "movie" && { "append_to_response": "content_ratings,videos,credits,crew,recommendations" })
     },
   });
-  const mediaDetails = mediaMapper.toFullDetails(data, mediaType)
+  const mediaDetails = (mediaType === 'movie' ? mediaMapper.toFullDetailsMovie(data) : mediaMapper.toFullDetailsSeries(data));
 
   return mediaDetails;
+}
+
+const getSerieSeasonDetails = async (id, seasonNumber) => {
+  const { data } = await tmdbClient.get(`tv/${id}/season/${seasonNumber}`, { 
+    params: { 
+      language: 'pt-BR',
+    },
+  });
+
+  const seasonDetails = mediaMapper.toSeasonDetails(data);
+
+  return seasonDetails;
 }
 
 const getMediaCredits = async (mediaType, id) => {
@@ -139,4 +151,4 @@ const getMediaVideos = async (mediaType, id) => {
   return trailer;
 }
 
-module.exports = { getPopular, getTrendings, getTopRated, getDiscover, getSearch, getGenreList, getMediaDetails, getMediaCredits, getMediaSimilar, getMediaVideos }
+module.exports = { getPopular, getTrendings, getTopRated, getDiscover, getSearch, getGenreList, getMediaDetails, getSerieSeasonDetails }

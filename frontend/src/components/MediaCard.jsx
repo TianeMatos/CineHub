@@ -1,6 +1,7 @@
 import { Star, Calendar } from "lucide-react";
 import { Link } from "react-router";
 import { ImageCard } from "./ui/ImageCard";
+import { dateFormat } from "../utils/dateTimeFormat";
 
 export const MediaCard = ({ id, title, releaseDate, rating, posterUrl, mediaType, genre }) => {
   return (
@@ -15,7 +16,7 @@ export const MediaCard = ({ id, title, releaseDate, rating, posterUrl, mediaType
           <div className="absolute bottom-0 left-0 right-0 p-4">
             <div className="flex items-center gap-2 text-xs text-[#fbbf24] mb-1">
               <Calendar className="w-3 h-3" />
-              {new Date(releaseDate).getFullYear()}
+              {dateFormat(releaseDate)}
             </div>
             <p className="text-sm text-gray-500 dark:text-gray-400">{genre || ""}</p>
           </div>

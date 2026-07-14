@@ -91,9 +91,7 @@ export const MovieDetails = ({ details }) => {
                 <div>
                   <h3 className="text-sm text-gray-500 dark:text-gray-400 mb-2">Elenco Principal</h3>
                   <p className="text-gray-900 dark:text-white">
-                    {details.cast.map((person, i) => (
-                      <span key={`cast-${i}`}>{person?.name?.trim() + ((i + 1) < details.cast.length ? ", " : "")}</span>
-                    ))}
+                    {details.cast.map((c) => ( c?.name?.trim() )).join(", ")}
                   </p> 
                 </div>
               </div>
@@ -105,7 +103,7 @@ export const MovieDetails = ({ details }) => {
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <section>
           <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-6 px-12 py-3">Títulos Similares</h2>
-          <MediaCarousel medias={details.similar} />
+          <MediaCarousel medias={details.recommendations} />
         </section>
       </main>
     </div>

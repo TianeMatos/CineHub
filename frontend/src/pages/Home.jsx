@@ -15,6 +15,7 @@ export const Home = () => {
   if (loading) return <LoadingScreen key={`LoadingScreen`} />
   if (error) return  <ErrorScreen key={`ErrorScreen`} message={error} />
   
+  console.log(trendings)
   return (
     <>
       <HeroBanner key={`featuredMedia-${featuredMedia?.id}`} {...featuredMedia} />
@@ -28,7 +29,7 @@ export const Home = () => {
               <ChevronRight className="w-5 h-5" />
             </Link>
           </div>
-          <MediaCarousel key={`trendings`} medias={trendings} />
+          <MediaCarousel key={`trendings`} items={trendings} />
         </section>
 
         <section>
@@ -39,7 +40,7 @@ export const Home = () => {
               <ChevronRight className="w-5 h-5" />
             </Link>
           </div>
-          <MediaCarousel key={`popularSeries`} medias={popularSeries} />
+          <MediaCarousel key={`popularSeries`} items={popularSeries} />
         </section>
 
         <section>
@@ -50,7 +51,7 @@ export const Home = () => {
               <ChevronRight className="w-5 h-5" />
             </Link>
           </div>
-          <MediaCarousel key={`popularMovies`} medias={popularMovies} />
+          <MediaCarousel key={`popularMovies`} items={popularMovies} />
         </section>
 
         <section className="bg-linear-to-r from-[#fbbf24]/10 to-transparent rounded-2xl p-8 md:p-12 border border-[#fbbf24]/20">
