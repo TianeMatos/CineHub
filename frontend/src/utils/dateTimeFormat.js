@@ -6,6 +6,12 @@ export const runtimeFormat = (time) => {
 }
 
 export const dateFormat = (date) => {
+  const dateFormated = new Date(date).toLocaleDateString('pt-BR');
+  
+  return dateFormated;
+}
+
+export const yearFormat = (date) => {
   const dateFormated = new Date(date).getFullYear();
   
   return dateFormated;

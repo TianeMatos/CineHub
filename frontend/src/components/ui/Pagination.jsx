@@ -4,7 +4,7 @@ export const Pagination = ({ page, totalPages, onPageChange }) => {
   const pages = Array.from({ length: totalPages }, (_, i) => i + 1);
 
   return (
-    <div className="flex items-center justify-center gap-2 mt-8">
+    <div className="flex items-center justify-center gap-2 mt-8 py-2">
       <button
         onClick={() => onPageChange(page - 1)}
         disabled={page === 1}
@@ -27,7 +27,7 @@ export const Pagination = ({ page, totalPages, onPageChange }) => {
         </button>
       ))) : (
         <span className="text-sm text-gray-400 px-2">
-          Página <b>{page}</b> de {totalPages}
+          Página <b className="text-[#fbbf24]">{page}</b> de {totalPages}
         </span>
       )}
 

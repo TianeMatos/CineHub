@@ -3,8 +3,8 @@ import { useFetchMedia } from "./useFetchMedia";
 
 export const useMediaTrailer = (initialMediaType = null, initialId = null) => {
   const [dynamicUrl, setDynamicUrl] = useState(null);
-  const currentUrl = initialMediaType && initialId 
-    ? `/${initialMediaType}/${initialId}/trailer` : dynamicUrl;
+  const currentUrl = dynamicUrl ?? 
+  (initialMediaType && initialId ? `/${initialMediaType}/${initialId}/trailer` : null);
 
   const { data, loading, error } = useFetchMedia(currentUrl);
 

@@ -1,14 +1,19 @@
-import { Link } from 'react-router';
-import { useGenreMedia } from '../hooks/useGenresMedia';
-import { RankBadge } from './ui/RankBadge'
-import { Star } from 'lucide-react';
+import { Link } from "react-router";
+import { RankBadge } from "./ui/RankBadge";
+import { Star } from "lucide-react";
+import { useFetchMedia } from "../hooks/useFetchMedia";
+import { dateFormat } from "../utils/dateTimeFormat";
 
 export const RankedRow = ({ item, rank }) => {
-  const { genres } = useGenreMedia(item.mediaType, item.genreIds);
+  const { data } = useFetchMedia(`${item.mediaType}/genres`);
+
+  const genres = item.genreIds.map((genreId) => {
+    return data?.find((genre) => genre.id === genreId);
+  });
 
   return (
     <Link
-      to={`/movie/${item.id}`}
+      to={`/${item.mediaType}/${item.id}`}
       className="group flex items-center gap-4 px-4 py-3 rounded-xl border border-transparent hover:border-[#fbbf24]/20 hover:bg-[#fbbf24]/5 transition-all duration-200"
     >
       <RankBadge rank={rank} />
@@ -18,7 +23,10 @@ export const RankedRow = ({ item, rank }) => {
           src={item.posterUrl}
           alt={item.title}
           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-          onError={(e) => { e.currentTarget.src = "https://via.placeholder.com/56x80/1a1a1a/666?text=?"; }}
+          onError={(e) => {
+            e.currentTarget.src =
+              "https://via.placeholder.com/56x80/1a1a1a/666?text=?";
+          }}
         />
       </div>
 
@@ -27,19 +35,24 @@ export const RankedRow = ({ item, rank }) => {
           {item.title}
         </h3>
         <div className="flex items-center gap-x-2 mt-1 flex-wrap">
-          <span className="text-sm text-gray-400">{item.releaseDate}</span>
+          <span className="text-sm text-gray-400">{dateFormat(item.releaseDate)}</span>
           <span className="w-1 h-1 rounded-full bg-gray-400" />
-          {genres && genres.slice(0, 2).map((genre, i) => (
-            <span key={`genre-${i}`} className="text-sm text-gray-400">{genre?.name.trim() + ((i + 1) < genres.length ? "," : "")}</span>
-          ))}
+          {genres &&
+            genres.slice(0, 2).map((genre, i) => (
+              <span key={`genre-${i}`} className="text-sm text-gray-400">
+                {genre?.name.trim() + (i + 1 < 2 ? "," : "")}
+              </span>
+            ))}
         </div>
         <p className="text-xs text-gray-400/60 mt-2">{item.voteCount} votos</p>
       </div>
 
       <div className="shrink-0 flex items-center gap-1.5 bg-black/40 border border-[#fbbf24]/30 px-3 py-1.5 rounded-lg">
         <Star className="w-3.5 h-3.5 text-[#fbbf24] fill-[#fbbf24]" />
-        <span className="text-sm font-bold text-[#fbbf24] tabular-nums">{item.rating.toFixed(1)}</span>
+        <span className="text-sm font-bold text-[#fbbf24] tabular-nums">
+          {item.rating}
+        </span>
       </div>
     </Link>
   );
-}
+};

@@ -2,7 +2,7 @@ import { createBrowserRouter } from "react-router";
 import { Root } from "./pages/Root";
 import { Home } from "./pages/Home";
 import { TopRated } from "./pages/TopRated";
-import { MediaPageDetails } from "./pages/MediaPageDetails";
+import { MediaDetails } from "./pages/MediaDetails";
 import { SearchPage } from "./pages/Search";
 import { ExploreMedia } from "./pages/ExploreMedia";
 // import { NotFound } from "./pages/NotFound";
@@ -16,7 +16,7 @@ export const router = createBrowserRouter([
       { path: "movies", element: <ExploreMedia key={"MoviesPage"} mediaType={`movie`} title={`Filmes`} description={`Explore nossa coleção completa de filmes`} /> },                 
       { path: "series", element: <ExploreMedia key={"SeriesPage"} mediaType={`tv`} title={`Séries`} description={`Descubra as melhores séries de todos os tempos`} /> },                 
       { path: "topRated", element: <TopRated /> },           
-      { path: "/:mediaType/:id", element: <MediaPageDetails /> },     
+      { path: "/:mediaType/:id", element: <MediaDetails /> },     
       { path: "/search", element: <SearchPage /> },  
       // { path: "*", element: <NotFound /> },
     ],

@@ -1,8 +1,8 @@
 import { useFetchMedia } from "./useFetchMedia";
 
 export function useTopRatedMedia(moviePage, seriesPage) {
-  const { data: moviesData, loading: loadM, error: errM } = useFetchMedia(`/movie/topRated?voteAverage=8.5&page=${moviePage}`);
-  const { data: seriesData, loading: loadS, error: errS } = useFetchMedia(`/tv/topRated?voteAverage=8.5&page=${seriesPage}`);
+  const { data: moviesData, loading: loadM, error: errM } = useFetchMedia(`/movie/topRated?page=${moviePage}`);
+  const { data: seriesData, loading: loadS, error: errS } = useFetchMedia(`/tv/topRated?page=${seriesPage}`);
 
   return {
     topRatedMovies: moviesData || [],

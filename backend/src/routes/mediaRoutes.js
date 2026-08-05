@@ -27,20 +27,9 @@ router.get('/:mediaType/discover', mediaController.discover);
 router.get('/:mediaType/genres', cacheMiddleware(WEEK), mediaController.genresList);
 
 // GET /api/media/:mediaType/:id/details
-// router.get('/:mediaType/:id/details', cacheMiddleware(DAY), mediaController.mediaDetails);
 router.get('/:mediaType/:id/details', mediaController.mediaDetails);
+
+// GET /api/media/:id/:seasonNumber
 router.get('/:id/:seasonNumber', mediaController.serieSeasonDetails);
-
-// GET /api/media/:mediaType/:id/similar 
-// router.get('/:mediaType/:id/similar', cacheMiddleware(DAY), mediaController.mediaSimilar);
-// router.get('/:mediaType/:id/similar', mediaController.mediaSimilar);
-
-// GET /api/media/:mediaType/:id/trailer
-// router.get('/:mediaType/:id/trailer', cacheMiddleware(WEEK), mediaController.mediaTrailer);
-// router.get('/:mediaType/:id/trailer', mediaController.mediaTrailer);
-
-// GET /api/media/:mediaType/:id/credits
-// router.get('/:mediaType/:id/credits', cacheMiddleware(WEEK), mediaController.mediaCredits);
-// router.get('/:mediaType/:id/credits', mediaController.mediaCredits);
 
 module.exports = router;

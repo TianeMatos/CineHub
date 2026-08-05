@@ -1,7 +1,7 @@
 const POSTER_BASE_URL = 'https://image.tmdb.org/t/p/original';
 const BACKDROP_BASE_URL = 'https://image.tmdb.org/t/p/w1280';
-
 const PROFILE_BASE_URL = "https://image.tmdb.org/t/p/w300";
+const STILL_BASE_URL = "https://image.tmdb.org/t/p/w780";
 
 const toMinSummary = (media, mediaType) => {
   return {
@@ -12,62 +12,71 @@ const toMinSummary = (media, mediaType) => {
     releaseDate: (media.release_date || media.first_air_date || ""),
     rating: media.vote_average ? Number(media.vote_average.toFixed(1)) : 0,
     voteCount: media.vote_count || 0,
+    popularity: media.popularity,
     genreIds: media.genre_ids || [],
-    mediaType: mediaType || media.media_type
+    mediaType: media.media_type || mediaType
   };
 };
-
 
 const toFullDetailsMovie = (media) => {
   return {
+    // Informações básicas
     id: media.id,
     title: media.title,
     overview: media.overview,
+    tagline: media.tagline,
+    contentRating: media.release_dates.results.find((r) => r.iso_3166_1 === "BR"),
+    releaseDate: media.release_date,
+    runtime: media.runtime,
+    genres: media.genres,
+    collection: media.belongs_to_collection,
+    language: media.original_language.toString().toUpperCase(),
+    country: media.origin_country.join(", "),
+    homepage: media.homepage,
+    // Imagens
     posterUrl: media.poster_path ? `${POSTER_BASE_URL}${media.poster_path}` : null,
     backdropUrl: media.backdrop_path ? `${BACKDROP_BASE_URL}${media.backdrop_path}` : null,
-    releaseDate: media.release_date,
-    rating: media.vote_average ? Number(media.vote_average.toFixed(1)) : 0,
-    runtime: media.runtime,
-    genres: media.genres || [],
-    tagLine: media.tagline || "",
-    videos: media.videos.results.find((v) => v.type === "Trailer" || v.type === "Teaser" || v.name === "Trailer Oficial") || [],
-    cast: media.credits.cast.slice(0, 3),
-    crew: media.credits.crew.find((c) => c.job === "Director") || media.created_by,
-    recommendations: media.recommendations.results.slice(0, 10).map((item) => toMinSummary(item, "movie")),
-    collection: media.belongs_to_collection || null
+    // Avaliações
+    rating: Number(media.vote_average.toFixed(1)),
+    votes: media.vote_count,
+    // Dinheiro
+    budget: new Intl.NumberFormat('pt-BR', { style: "currency", currency: "BRL" }).format(media.budget),
+    boxOffice: new Intl.NumberFormat('pt-BR', { style: "currency", currency: "BRL" }).format(media.revenue),
+    // Produção
+    productionCompanies: media.production_companies.map((pc) => pc.name).join(", "),
+    // Dirretor e Escritor
+    director: media.credits.crew.find((c) => c.job === "Director"),
+    screenplay: media.credits.crew.find((c) => c.job === "Screenplay" || c.job === "Original Story" || c.job === "Writer"),
+    // Elenco
+    cast: media.credits.cast.slice(0, 10).map((actor) => ({
+      id: actor.id,
+      name: actor.name,
+      role: actor.character,
+      photo: actor.profile_path
+        ? `${PROFILE_BASE_URL}${actor.profile_path}`
+        : null,
+    })),
+    // Trailer
+    video:
+      media.videos.results.find(
+        (v) =>
+          v.site === "YouTube" &&
+          v.type === "Trailer" ||
+          v.type === "Teaser"
+      ) || null,
+
+    // Recomendações
+    recommendations: media.recommendations.results.map((item) =>
+      toMinSummary(item, "tv")
+    ),
   };
 };
-
-// const toFullDetailsSeries = (media) => {
-//   return {
-//     id: media.id,
-//     title: media.name,
-//     posterUrl: media.poster_path ? `${POSTER_BASE_URL}${media.poster_path}` : null,
-//     backdropUrl: media.backdrop_path ? `${BACKDROP_BASE_URL}${media.backdrop_path}` : null,
-//     releaseDate: media.first_air_date,
-//     overview: media.overview,
-//     rating: media.vote_average ? Number(media.vote_average.toFixed(1)) : 0,
-//     votes: media.vote_count || 0,
-//     tagline:media.tagline || "",
-//     status: media.status,
-//     genres: media.genres || [],
-//     status: media.status,
-//     numberEpisodes: media.number_of_episodes,
-//     numberSeasons: media.number_of_seasons,
-//     seasons: media.seasons,
-//     videos: media.videos.results.find((v) => v.type === "Trailer" || v.type === "Teaser" || v.name === "Trailer Oficial") || [],
-//     cast: media.credits.cast.slice(0, 3),
-//     crew: media.credits.crew.find((c) => c.job === "Director") || media.created_by,
-//     recommendations: media.recommendations.results.slice(0, 10).map((item) => toMinSummary(item, "tv"))
-//   };
-// };
 
 const toFullDetailsSeries = (media) => ({
   id: media.id,
 
   // Informações básicas
   title: media.name,
-  originalTitle: media.original_name,
   overview: media.overview,
   tagline: media.tagline,
   contentRating: media.content_ratings.results.find((r) => r.iso_3166_1 === "BR") || media.content_ratings.results[0],
@@ -76,7 +85,6 @@ const toFullDetailsSeries = (media) => ({
   posterUrl: media.poster_path
     ? `${POSTER_BASE_URL}${media.poster_path}`
     : null,
-
   backdropUrl: media.backdrop_path
     ? `${BACKDROP_BASE_URL}${media.backdrop_path}`
     : null,
@@ -122,7 +130,9 @@ const toFullDetailsSeries = (media) => ({
   // Produção
   network: media.networks?.map((n) => n.name).join(", "),
   productionCompanies: media.production_companies,
-  productionCountries: media.production_countries,
+
+  // Provedor
+  providers: media.providers,
 
   // País
   country: media.origin_country.join(", "),
@@ -148,7 +158,7 @@ const toFullDetailsSeries = (media) => ({
     media.videos.results.find(
       (v) =>
         v.site === "YouTube" &&
-        v.type === "Trailer" || 
+        v.type === "Trailer" ||
         v.type === "Teaser"
     ) || null,
 
@@ -157,8 +167,6 @@ const toFullDetailsSeries = (media) => ({
     toMinSummary(item, "tv")
   ),
 });
-
-const STILL_BASE_URL = "https://image.tmdb.org/t/p/w780";
 
 const toSeasonDetails = (season) => {
   return {

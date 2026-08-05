@@ -1,6 +1,6 @@
 import { Film, Tv, ArrowRight } from "lucide-react";
 import { useNavigate } from "react-router";
-import { dateFormat } from "../utils/dateTimeFormat"
+import { yearFormat } from "../utils/dateTimeFormat"
 
 export function SearchDropdown({ results, query, onClose, onViewAll }) {
   const navigate = useNavigate();
@@ -37,7 +37,7 @@ export function SearchDropdown({ results, query, onClose, onViewAll }) {
                     : <Tv size={10} className="text-gray-500" />
                   }
                   <span className="text-xs text-gray-500">
-                    {media.mediaType === "movie" ? "Filme" : "Série"} · {dateFormat(media.releaseDate)}
+                    {media.mediaType === "movie" ? "Filme" : "Série"} · {yearFormat(media.releaseDate)}
                   </span>
                 </div>
               </div>

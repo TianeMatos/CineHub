@@ -13,5 +13,12 @@ export const useHomeMedia = () => {
   const trendings = allTrendings.sort((a, b) => b.popularity - a.popularity);
   const featuredMedia = trendings?.[0];
 
-  return { loading, error, trendings, featuredMedia, popularMovies, popularSeries }
+  return {
+    loading,
+    error,
+    trendings,
+    featuredMedia,
+    popularMovies: popularMovies ?? [],
+    popularSeries: popularSeries ?? []
+  }
 }

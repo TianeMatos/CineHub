@@ -4,25 +4,25 @@ import {
   ArrowLeft,
   Calendar,
   ChevronDown,
+  Film,
   MonitorPlay,
   Play,
-  Star,
   ThumbsUp,
   TrendingUp,
   Tv,
   Users,
 } from "lucide-react";
 import { MediaCarousel } from "./MediaCarousel";
-import { dateFormat, runtimeFormat } from "../utils/dateTimeFormat";
-import { RatingRing } from "./ui/RatingRing";
+import { dateFormat, runtimeFormat, yearFormat } from "../utils/dateTimeFormat";
+import { BigRatingRing } from "./ui/BigRatingRing";
 import { EpisodeRow } from "./ui/EpisodeRow";
 import { useFetchMedia } from "../hooks/useFetchMedia";
 import { LoadingScreen } from "./ui/LoadingScreen";
 import { ErrorScreen } from "./ui/ErrorScreen";
 import { TrailerModal } from "./ui/TrailerModal";
-import { Link } from "react-router"
-
-// ─── Page ─────────────────────────────────────────────────────────────────────
+import { useNavigate } from "react-router";
+import { ScrollToTop } from "./ui/ScrollToTop";
+import { ProviderBadges } from "./ui/ProviderBadges";
 
 export function SeriesDetails({ details }) {
   const [activeSeason, setActiveSeason] = useState(1);
@@ -30,6 +30,7 @@ export function SeriesDetails({ details }) {
   const [liked, setLiked] = useState(false);
   const [episodesOpen, setEpisodesOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const navigate = useNavigate();
 
   const {
     data: currentSeason,
@@ -38,36 +39,35 @@ export function SeriesDetails({ details }) {
   } = useFetchMedia(`/${details.id}/${activeSeason}`);
 
   const totalEps = details.numberEpisodes;
-  const statusColor =
-    details.inProduction === true
-      ? "text-green-400 bg-green-400/10"
-      : "text-gray-400 bg-white/10";
 
   return (
     <div className="min-h-screen">
-      {/* Hero */}
-      <div className="relative min-h-[70vh] w-full overflow-hidden">
+      <ScrollToTop />
+      <div className="relative min-h-[70vh] pb-6 w-full overflow-hidden">
         <div className="absolute inset-0">
           <ImageCard
             src={details.backdropUrl}
             alt={details.title}
-            className="w-full h-full object-cover"
+            className="w-full h-full object-cover object-center"
           />
-          <div className="absolute inset-0 bg-linear-to-r from-black via-black/80 to-black/30" />
-          <div className="absolute inset-0 bg-linear-to-t from-black via-transparent to-transparent" />
+          <div className="absolute inset-0 bg-linear-to-r from-black/85 via-black/60 to-black/40" />
+          <div className="absolute inset-0 bg-linear-to-t from-black/70 via-transparent to-transparent" />
         </div>
 
-        <div className="relative h-full max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
-          <Link to="/series"
-            className="inline-flex items-center gap-2 text-white hover:text-[#fbbf24] transition-colors pt-4 mb-6 sm:mb-4 "
+        <div className="relative h-full max-w-7xl mx-auto px-6 sm:px-10 lg:px-8">
+          <button
+            onClick={() => {
+              navigate(-1);
+            }}
+            className="inline-flex items-center gap-2 text-gray-900 dark:text-white hover:text-[#fbbf24] transition-colors py-6 mb-4 cursor-pointer"
           >
             <ArrowLeft className="w-5 h-5" />
             Voltar
-          </Link>
+          </button>
 
           <div className="flex flex-col md:flex-row gap-8 items-center h-[calc(100%-8rem)]">
             <div className="w-64 shrink-0 hidden md:block">
-              <div className="relative overflow-hidden rounded-xl aspect-2/3 bg-muted shadow-2xl ring-1 ring-white/10">
+              <div className="relative overflow-hidden rounded-xl aspect-2/3 bg-gray-500/10 shadow-2xl ring-1 ring-white/10">
                 <ImageCard
                   src={details.posterUrl}
                   alt={details.title}
@@ -77,37 +77,40 @@ export function SeriesDetails({ details }) {
             </div>
 
             <div className="flex-1 pb-4">
-              {/* Badges */}
+              <h1 className="text-3xl sm:text-6xl font-bold mb-3 text-white leading-tight">
+                {details.title}
+              </h1>
+
               <div className="flex flex-wrap items-center gap-2 mb-4">
+                {details.genres &&
+                  details.genres.map((g) => (
+                    <span
+                      key={g.id}
+                      className="text-sm border border-white/23 bg-black/30 text-white/80 px-3 py-1 rounded-full hover:bg-white/20 transition-colors ease-out"
+                    >
+                      {g.name}
+                    </span>
+                  ))}
                 <span
-                  className={`text-xs font-medium px-2 sm:px-2.5 py-1 rounded-full flex items-center gap-1.5 ${statusColor}`}
+                  className={`text-xs px-3 py-1 rounded-full flex items-center gap-1.5 border ${
+                    details.status === "Returning Series"
+                      ? "bg-green-800/75 border-green-300/65 text-green-300"
+                      : "bg-orange-800/75 border-orange-300/65 text-white/80"
+                  }`}
                 >
                   <span
-                    className={`w-1.5 h-1.5 rounded-full ${details.status === "Returning Series" ? "bg-green-400" : "bg-gray-500"}`}
+                    className={`w-1.5 h-1.5 rounded-full ${details.status === "Em exibição" ? "bg-green-300" : "bg-orange-300"}`}
                   />
                   {details.status === "Returning Series"
                     ? "Em Exibição"
                     : "Finalizada"}
                 </span>
-                <span className="bg-[#fbbf24] text-black px-2.5 sm:px-3 py-1 rounded-md font-bold sm:font-medium text-xs sm:text-sm">
-                  {dateFormat(details.releaseDate)}
-                </span>
-                <div className="flex items-center gap-1 bg-black/50 backdrop-blur-sm px-2.5 sm:px-3 py-1 rounded-md">
-                  <Star className="w-4 h-4 text-[#fbbf24] fill-[#fbbf24]" />
-                  <span className="font-medium">{details.rating}/10</span>
-                </div>
               </div>
 
-              <h1 className="text-3xl sm:text-6xl font-bold mb-3 text-white leading-tight">
-                {details.title}
-              </h1>
-              <p className="text-sm sm:text-lg text-gray-400 mb-5">
-                {details.genres && details.genres.map((g) => g.name).join(", ")}
-              </p>
               <p className="text-white text-sm sm:text-lg mb-5 max-w-2xl leading-relaxed">
                 {details.overview}
               </p>
-              
+
               {details.tagline && (
                 <p className="mb-8 text-sm sm:text-lg italic text-[#fbbf24]">
                   "{details.tagline}"
@@ -115,13 +118,23 @@ export function SeriesDetails({ details }) {
               )}
 
               <div className="flex flex-wrap gap-3 mb-4 sm:mb-8">
-                <button onClick={() => setIsModalOpen(true)} className={`flex items-center gap-2 bg-[#fbbf24] hover:bg-[#f59e0b] text-black sm:text-base px-4 sm:px-8 py-2.5 sm:py-3 rounded-lg font-medium transition-colors ${details.video && "cursor-pointer"}`}>
+                <button
+                  onClick={() => setIsModalOpen(true)}
+                  className={`flex items-center gap-2 bg-[#fbbf24] hover:bg-[#f59e0b] text-black sm:text-base px-4 sm:px-8 py-2.5 sm:py-3 rounded-lg font-medium transition-colors ${details.video && "cursor-pointer"}`}
+                >
                   <Play className="w-4 w-sm-5 h-4 h-sm-5 fill-black" />
-                  {details.video ?  "Assistir Vídeo"  : "Sem Vídeo Disponível"}
+                  {details.video ? "Assistir Vídeo" : "Sem Vídeo Disponível"}
                 </button>
-                {details.video && <TrailerModal key={details.video.name} isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} videoKey={details.video.key} />}
+                {details.video && (
+                  <TrailerModal
+                    key={details.video.name}
+                    isOpen={isModalOpen}
+                    onClose={() => setIsModalOpen(false)}
+                    videoKey={details.video.key}
+                  />
+                )}
 
-                 {/* Not Implemented Yet  */}
+                {/* Not Implemented Yet  */}
                 <button
                   onClick={() => setLiked((v) => !v)}
                   className={`flex items-center gap-2 px-5 py-3.5 rounded-xl text-sm font-medium border transition-colors ${liked ? "bg-[#fbbf24]/15 border-[#fbbf24]/30 text-[#fbbf24]" : "bg-white/8 border-white/12 text-white/80 hover:bg-white/12"}`}
@@ -132,14 +145,15 @@ export function SeriesDetails({ details }) {
                   {liked ? "Curtido" : "Curtir"}
                 </button>
               </div>
+              <ProviderBadges providers={details.providers} />
             </div>
           </div>
         </div>
       </div>
 
-      <main className="max-w-6xl mx-auto px-4 sm:px-6 py-14 space-y-16">
-        {/* Stats strip */}
-        <div className="grid place-content-center grid-cols-1 sm:grid-cols-4 gap-4">
+      <main className="max-w-6xl mx-auto px-4 sm:px-6 py-12 space-y-16">
+
+        <section className="grid place-content-center grid-cols-1 sm:grid-cols-4 gap-4 px-4 md:px-6">
           {[
             {
               icon: Users,
@@ -173,19 +187,18 @@ export function SeriesDetails({ details }) {
                 <Icon className="w-5 h-5 text-[#fbbf24]" />
               </div>
               <div>
-                <p className="text-xs text-gray-400">{label}</p>
+                <p className="text-xs uppercase text-gray-400">{label}</p>
                 <p className="text-sm font-semibold text-white">{value}</p>
                 <p className="text-xs text-gray-400">{sub}</p>
               </div>
             </div>
           ))}
-        </div>
+        </section>
 
-        {/* Rating + details */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 place-content-center">
+        <section className="grid grid-cols-1 sm:grid-cols-3 gap-6 place-content-center mx-4 sm:mx-6">
           {/* Score */}
           <div className="bg-[#141414] border border-white/6 rounded-2xl p-4 sm:p-6 mx-2 flex flex-col items-center justify-center gap-2">
-            <RatingRing value={details.rating} />
+            <BigRatingRing value={details.rating} />
             <p className="text-sm text-gray-400 text-center">
               Nota média baseada em
               <br />
@@ -193,20 +206,25 @@ export function SeriesDetails({ details }) {
             </p>
           </div>
 
-          {/* Details */}
           <div className="col-span-1 sm:col-span-2 bg-[#141414] border border-white/6 rounded-2xl p-4 sm:p-6 mx-2">
-            <h3 className="text-sm font-semibold text-white uppercase tracking-wider mb-4">
-              Ficha técnica
-            </h3>
+            <div className="flex items-center gap-2 mb-6">
+              <Film className="w-4 h-4 text-[#fbbf24]" />
+              <h3 className="text-sm font-semibold text-white uppercase tracking-wider">
+                Ficha técnica
+              </h3>
+            </div>
             <div className="grid sm:grid-cols-2 gap-x-8 gap-y-3">
               {[
                 { label: "Criador", value: details.crew[0].name },
-                { label: "Duração", value: `${details.type === "movie" ? runtimeFormat(details.runtime) : Math.round(details.episodeRunTime) + " por episódio"}` },
+                {
+                  label: "Duração",
+                  value: `${details.type === "movie" ? runtimeFormat(details.runtime) : Math.round(details.episodeRunTime) + " por episódio"}`,
+                },
                 { label: "País de origem", value: details.country },
                 { label: "Idioma original", value: details.language },
                 {
                   label: "Classificação indicativa",
-                  value: details.contentRating.rating || "",
+                  value: details.contentRating.rating ? details.contentRating.rating : "Não Informado",
                 },
                 {
                   label: "Status",
@@ -215,11 +233,11 @@ export function SeriesDetails({ details }) {
                 },
                 {
                   label: "Estreia",
-                  value: new Date(details.releaseDate).toLocaleDateString("BR"),
+                  value: dateFormat(details.releaseDate),
                 },
                 {
                   label: "Último episódio",
-                  value: new Date(details.lastAirDate).toLocaleDateString("BR"),
+                  value: dateFormat(details.lastAirDate),
                 },
               ].map(({ label, value }) => (
                 <div
@@ -234,21 +252,20 @@ export function SeriesDetails({ details }) {
               ))}
             </div>
           </div>
-        </div>
+        </section>
 
-        {/* Cast */}
         <section>
           <h2 className="text-2xl font-bold text-white mb-7 px-4 sm:px-12">
             Elenco Principal
           </h2>
 
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6 ">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6 mx-2">
             {details.cast.map((actor) => (
               <div
                 key={actor.name}
                 className="flex flex-col items-center text-center group"
               >
-                <div className="w-20 h-20 rounded-2xl overflow-hidden bg-[#1f1f1f] mb-3 ring-1 ring-white/10 group-hover:ring-[#fbbf24]/30 transition-all">
+                <div className="w-15 h-15 sm:w-20 sm:h-20 rounded-2xl overflow-hidden bg-[#1f1f1f] mb-3 ring-1 ring-white/10 group-hover:ring-[#fbbf24]/30 transition-all">
                   <img
                     src={actor.photo}
                     alt={actor.name}
@@ -267,11 +284,10 @@ export function SeriesDetails({ details }) {
           </div>
         </section>
 
-        {/* Episodes */}
         {loading && <LoadingScreen />}
         {error && <ErrorScreen />}
         {currentSeason && (
-          <section className="border border-white/10 rounded-2xl overflow-hidden mx-3 sm:mx-10">
+          <section className="border border-white/10 rounded-2xl overflow-hidden mx-3 sm:mx-12">
             <button
               onClick={() => setEpisodesOpen((prev) => !prev)}
               className="w-full flex items-center justify-between p-6 hover:bg-white/4 transition-colors cursor-pointer"
@@ -349,8 +365,8 @@ export function SeriesDetails({ details }) {
                                 >
                                   <span>Temporada {s.seasonNumber}</span>
                                   <span className="text-xs text-gray-400">
-                                    {dateFormat(s.airDate)} -{" "}
-                                    {s.episodeCount} ep.
+                                    {yearFormat(s.airDate)} - {s.episodeCount}{" "}
+                                    ep.
                                   </span>
                                 </button>
                               ),
@@ -362,7 +378,8 @@ export function SeriesDetails({ details }) {
                 )}
                 <div className="px-6 py-4 border-be-2 border-gray-400">
                   <h3 className="text-lg font-semibold text-white">
-                    Temporada {activeSeason} - {dateFormat(currentSeason.airDate)}
+                    Temporada {activeSeason} -{" "}
+                    {yearFormat(currentSeason.airDate)}
                   </h3>
 
                   <p className="text-sm text-gray-400 mt-2 ml-1 leading-relaxed">
@@ -379,14 +396,13 @@ export function SeriesDetails({ details }) {
           </section>
         )}
 
-        {/* Similar */}
         <section>
           <h2 className="text-2xl font-bold text-white mb-7 px-4 sm:px-12">
             Séries Similares
           </h2>
           <MediaCarousel
             key={`recommendations-tv`}
-            items={details?.recommendations}
+            items={details.recommendations}
           />
         </section>
       </main>

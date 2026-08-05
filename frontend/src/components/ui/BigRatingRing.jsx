@@ -1,4 +1,4 @@
-export function RatingRing({ value }) {
+export function BigRatingRing({ value }) {
   const pct = (value / 10) * 100;
   const r = 38;
   const circ = 2 * Math.PI * r;

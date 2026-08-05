@@ -1,58 +1,28 @@
-import { HeroBanner } from "../components/HeroBanner";
-import { ChevronRight } from "lucide-react";
+import { HeroBanner } from "../components/layout/HeroBanner";
 import { Link } from "react-router";
 import { useHomeMedia } from "../hooks/useHomeMedia";
 import { LoadingScreen } from "../components/ui/LoadingScreen";
 import { ErrorScreen } from "../components/ui/ErrorScreen";
-import { MediaCarousel } from "../components/MediaCarousel";
+import { MediaSection } from "../components/MediaSection";
 
-// TODO: Continuar a pagina com os detalhes de um serie  
-// TODO: Consertar a estrutura dos hooks e paginas
+// TODO -> FIX: trendings mistura filmes e séries mas o "Ver Todos" vai só pra /movies
+// TODO -> FIX: comprimento dos badges nas pages details 
+// TODO -> FIX: igualar a estrutura da page de filmes e series, deixar o layout mais estruturado
 
-export const Home = () => {
+export function Home() {
   const { loading, error, trendings, featuredMedia, popularMovies, popularSeries } = useHomeMedia();
 
-  if (loading) return <LoadingScreen key={`LoadingScreen`} />
-  if (error) return  <ErrorScreen key={`ErrorScreen`} message={error} />
+  if (loading) return <LoadingScreen />
+  if (error) return <ErrorScreen message={error} />
   
-  console.log(trendings)
   return (
     <>
       <HeroBanner key={`featuredMedia-${featuredMedia?.id}`} {...featuredMedia} />
 
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-10 py-12 space-y-16">
-        <section>
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">Em Alta</h2>
-            <Link to={`/movies`} className="flex items-center gap-2 text-[#fbbf24] hover:text-[#f59e0b] transition-colors">
-              Ver Todos
-              <ChevronRight className="w-5 h-5" />
-            </Link>
-          </div>
-          <MediaCarousel key={`trendings`} items={trendings} />
-        </section>
-
-        <section>
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">Series Populares</h2>
-            <Link to={`/series`} className="flex items-center gap-2 text-[#fbbf24] hover:text-[#f59e0b] transition-colors">
-              Ver Todos
-              <ChevronRight className="w-5 h-5" />
-            </Link>
-          </div>
-          <MediaCarousel key={`popularSeries`} items={popularSeries} />
-        </section>
-
-        <section>
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">Filmes Populares</h2>
-            <Link to={`/movies`} className="flex items-center gap-2 text-[#fbbf24] hover:text-[#f59e0b] transition-colors">
-              Ver Todos
-              <ChevronRight className="w-5 h-5" />
-            </Link>
-          </div>
-          <MediaCarousel key={`popularMovies`} items={popularMovies} />
-        </section>
+      <main className="max-w-11/12 mx-auto px-4 sm:px-6 lg:px-10 py-12 space-y-16">
+        <MediaSection title={"Em Alta"} href={"/movies"} items={trendings} />
+        <MediaSection title={"Series Populares"} href={"/series"} items={popularSeries} />
+        <MediaSection title={"Filmes Populares"} href={"/movies"} items={popularMovies} />
 
         <section className="bg-linear-to-r from-[#fbbf24]/10 to-transparent rounded-2xl p-8 md:p-12 border border-[#fbbf24]/20">
           <div className="max-w-2xl">

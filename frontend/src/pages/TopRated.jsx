@@ -10,17 +10,23 @@ export function TopRated() {
   const [activeTab, setActiveTab] = useState("movies");
   const [moviePage, setMoviePage] = useState(1);
   const [seriesPage, setSeriesPage] = useState(1);
-  
+
   const { topRatedMovies, topRatedSeries, loading, error } = useTopRatedMedia(moviePage, seriesPage);
+
+  if (loading) return <LoadingScreen key="LoadingScreen" />;
+  if (error) return <ErrorScreen key="ErrorScreen" message={error} />;
+
+  // 🎯 1. Seleção Dinâmica Segura
+  const isMovies = activeTab === "movies";
+  const currentData = isMovies ? topRatedMovies : topRatedSeries;
   
-  if (loading) return <LoadingScreen key={`LoadingScreen`} />
-  if (error) return  <ErrorScreen key={`ErrorScreen`} message={error} />
-  
-  const page = activeTab === "movies" ? moviePage : seriesPage;
-  const data = activeTab === "movies" ? topRatedMovies : topRatedSeries;
-  const setPage = activeTab === "movies" ? setMoviePage : setSeriesPage;
-  const totalPages = 5;
-  const pageItems = data;
+  const page = isMovies ? moviePage : seriesPage;
+  const setPage = isMovies ? setMoviePage : setSeriesPage;
+
+  const pageItems = currentData?.results || [];
+  const totalPages = currentData?.dataInfo?.totalPages ?? 1;
+  const totalResults = currentData?.dataInfo?.totalResults ?? 0;
+
   const globalOffset = (page - 1) * 20;
 
   function handleTabChange(tab) {
@@ -29,14 +35,11 @@ export function TopRated() {
 
   function handlePageChange(p) {
     setPage(p);
-
-    setTimeout(() => {
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    }, 0);
+    window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
   return (
-    <main className="max-w-5xl mx-auto px-4 sm:px-6 py-12">
+    <main className="max-w-11/12 mx-auto px-4 sm:px-6 py-12">
       {/*//* Header */}
       <div className="mb-8 flex items-center gap-4">
         <div className="bg-linear-to-br from-[#fbbf24] to-[#f59e0b] p-3 rounded-xl">
@@ -54,7 +57,7 @@ export function TopRated() {
         <p className="text-sm text-gray-400">
           Seleção baseada em avaliações de críticos e público, atualizada semanalmente.
           <span className="block">
-            Todos os títulos possuem avaliação acima de <span className="text-[#fbbf24] font-medium">8.5/10</span>.
+            Todos os títulos possuem avaliação acima de <span className="text-[#fbbf24] font-medium">8/10</span>.
           </span>
         </p>
       </div>
@@ -71,8 +74,8 @@ export function TopRated() {
         >
           <Film className="w-4 h-4" />
           Filmes
-          <span className={`text-xs px-1.5 py-0.5 rounded-full ${activeTab === "movies" ? "bg-black/20 text-black" : "bg-white/5 text-gray-400"}`}>
-            {topRatedMovies.length * totalPages}
+          <span className={`text-xs px-1.5 py-0.5 rounded-full ${activeTab === "movies" ? "bg-black/20 text-black" : "opacity-0"}`}>
+            {totalResults}
           </span>
         </button>
         <button
@@ -85,15 +88,15 @@ export function TopRated() {
         >
           <Tv className="w-4 h-4" />
           Séries
-          <span className={`text-xs px-1.5 py-0.5 rounded-full ${activeTab === "series" ? "bg-black/20 text-black" : "bg-white/5 text-gray-400"}`}>
-            {topRatedSeries.length * totalPages}
+          <span className={`text-xs px-1.5 py-0.5 rounded-full ${activeTab === "series" ? "bg-black/20 text-black" : "opacity-0"}`}>
+            {totalResults}
           </span>
         </button>
       </div>
 
       {/*//* Range label */}
       <p className="text-xs text-gray-400/60 mb-3 px-1">
-        Exibindo #{globalOffset + 1}–#{globalOffset + pageItems.length} de {data.length * totalPages} títulos
+        Exibindo #{globalOffset + 1}–#{globalOffset + pageItems.length} de {totalResults} títulos
       </p>
 
       {/*//* Ranked list */}

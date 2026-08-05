@@ -8,7 +8,7 @@ import { Pagination } from "../components/ui/Pagination";
 import { useSearchParams } from "react-router";
 import { ScrollToTop } from "../components/ui/ScrollToTop";
 
-export const ExploreMedia = ({ mediaType, title, description }) => {
+export function ExploreMedia({ mediaType, title, description }) {
   const [selectedGenre, setSelectedGenre] = useState({ id: "all", name: "Todos" });
   const [sortBy, setSortBy] = useState("popularity.desc");
   const [searchParams, setSearchParams] = useSearchParams();
@@ -17,8 +17,11 @@ export const ExploreMedia = ({ mediaType, title, description }) => {
   const genreParam = selectedGenre.id !== "all" ? `&genre=${selectedGenre.id}` : "";
   const mediaEndpoint = `/${mediaType}/discover?page=${currentPage}&sortBy=${sortBy}${genreParam}`;
   const genreEndpoint = `/${mediaType}/genres`;
-
   const { mediaData, genres, loading, error } = useExploreMedia(mediaEndpoint, genreEndpoint);
+
+  console.log(mediaEndpoint);
+  console.log(genreEndpoint);
+
   const totalPages = Math.min(mediaData?.dataInfo?.totalPages ?? 1, 500);
 
   if (loading) return <LoadingScreen key={`LoadingScreen`} />;
@@ -28,8 +31,18 @@ export const ExploreMedia = ({ mediaType, title, description }) => {
     setSearchParams({page: p});
   }
 
+  const handleSortChange = (e) => {
+    setSortBy(e.target.value);
+    setSearchParams({ page: 1 });
+  };
+
+  const handleGenreChange = (genre) => {
+    setSelectedGenre(genre);
+    setSearchParams({ page: 1 });
+  };
+
   return (
-    <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <main className="max-w-11/12 mx-auto px-4 sm:px-6 lg:px-8 py-12">
       <ScrollToTop />
       <div className="mb-8">
         <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-2">
@@ -45,10 +58,7 @@ export const ExploreMedia = ({ mediaType, title, description }) => {
           <Filter className="w-4 h-4 text-gray-500 dark:text-gray-400" />
           <select
             value={sortBy}
-            onChange={(e) => {
-              setSortBy(e.target.value);
-              setSearchParams(1);
-            }}
+            onChange={(e) => handleSortChange(e)}
             className="bg-transparent border-none outline-none w-full text-sm text-gray-900 dark:text-white cursor-pointer"
           >
             <option value="popularity.desc" className="bg-[#1f1f1f]">
@@ -69,10 +79,7 @@ export const ExploreMedia = ({ mediaType, title, description }) => {
         {[{ id: "all", name: "Todos" }, ...genres].map((genre) => (
           <button
             key={genre.id}
-            onClick={() => {
-              setSelectedGenre(genre);
-              setSearchParams(1);
-            }}
+            onClick={() => handleGenreChange(genre)}
             className={`px-4 py-2 mb-1 rounded-lg whitespace-nowrap transition-colors ${
               genre.id === selectedGenre.id
                 ? "bg-[#fbbf24] text-black"
@@ -86,15 +93,15 @@ export const ExploreMedia = ({ mediaType, title, description }) => {
 
       {/* //* Data */}
       {mediaData?.results?.length > 0 ? (
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 md:gap-6">
+        <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-4 md:gap-6">
           {mediaData?.results.map((media) => (
-            <MediaCard key={`${media.mediaType}-${media.id}`} {...media} />
+            <MediaCard key={`${media.mediaType}-${media.id}`} media={media} />
           ))}
         </div>
       ) : (
         <div className="text-center py-12">
           <p className="text-gray-500 dark:text-gray-400">
-            Nenhum filme encontrado para este gênero.
+            Nenhum resultado encontrado para este gênero.
           </p>
         </div>
       )}

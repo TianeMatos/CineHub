@@ -1,6 +1,6 @@
 import { Film, Tv, Star } from "lucide-react";
 import { Link, useLocation } from "react-router";
-import { SearchBar } from "./SearchBar";
+import { SearchBar } from "../SearchBar";
 
 export const Navbar = () => {
   const location = useLocation();

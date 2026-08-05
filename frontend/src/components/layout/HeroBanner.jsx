@@ -1,10 +1,10 @@
 import { Play, Info, Star } from "lucide-react";
-import { ImageCard } from "./ui/ImageCard";
+import { ImageCard } from "../ui/ImageCard";
 import { Link } from "react-router";
 import { useState } from "react";
-import { TrailerModal } from "./ui/TrailerModal";
-import { useMediaTrailer } from "../hooks/useMediaTrailer";
-import { dateFormat } from "../utils/dateTimeFormat";
+import { TrailerModal } from "../ui/TrailerModal";
+import { useMediaTrailer } from "../../hooks/useMediaTrailer";
+import { yearFormat } from "../../utils/dateTimeFormat";
 
 export const HeroBanner = ({ id, title, overview, rating, releaseDate, backdropUrl, mediaType }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -33,7 +33,7 @@ export const HeroBanner = ({ id, title, overview, rating, releaseDate, backdropU
               <Star className="w-4 h-4 text-[#fbbf24] fill-[#fbbf24]" />
               <span className="font-medium">{rating}</span>
             </div>
-            <span className="text-gray-500 dark:text-gray-400">{dateFormat(releaseDate)}</span>
+            <span className="text-gray-500 dark:text-gray-400">{yearFormat(releaseDate)}</span>
           </div>
 
           <h1 className="text-5xl md:text-6xl font-bold mb-4 text-gray-900 dark:text-white">

@@ -1,7 +1,5 @@
 const { getPopular, getTopSeries, getTrendings, getTopRated, getDiscover, getGenreList, getMediaDetails, getMediaSimilar, getMediaVideos, getMediaCredits, getSearch, getSerieSeasonDetails } = require("../services/mediaService");
 const AppError = require("../utils/AppError");
-const popularFilter = require("../utils/popularFilter");
-const shuffle = require("../utils/shuffleMedia");
 
 const mediaController = {
   //* OK
@@ -15,7 +13,6 @@ const mediaController = {
     try {
       const media = await getPopular(mediaType);
 
-      const shuffledPopular = shuffle(media);
       res.json(media);
     } catch (error) {
       console.log("Error: ", error);
@@ -44,14 +41,14 @@ const mediaController = {
   //* OK
   topRated: async (req, res, next) => {
     const { mediaType } = req.params;
-    const { voteAverage, page } = req.query;
+    const { page } = req.query;
 
     if (mediaType !== 'movie' && mediaType !== 'tv') {
       return next(new AppError("Tipo de mídia inválido", 400));
     }
     
     try {
-      const media = await getTopRated(mediaType, Number(voteAverage), Number(page));
+      const media = await getTopRated(mediaType, Number(page));
 
       res.status(200).json(media);
     } catch (error) {
@@ -83,11 +80,11 @@ const mediaController = {
 
   //* OK
   search: async (req, res, next) => {
-    const { page = 1, q: query } = req.query;
+    const { page = 1, q: query, mediaType = "all" } = req.query;
 
     const pageNumber = Number(page);
     try {
-      const media = await getSearch(pageNumber, query);
+      const media = await getSearch(pageNumber, query, mediaType);
 
       res.status(200).json(media);
     } catch (error) {

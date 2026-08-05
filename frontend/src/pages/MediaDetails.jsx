@@ -5,7 +5,7 @@ import { MovieDetails } from "../components/MovieDetails";
 import { useMediaDetails } from "../hooks/useMediaDetails";
 import { SeriesDetails } from "../components/SerieDetails";
 
-export function MediaPageDetails() {
+export function MediaDetails() {
   const { mediaType, id } = useParams();
 
   const { details, loading, error } = useMediaDetails(mediaType, id);
