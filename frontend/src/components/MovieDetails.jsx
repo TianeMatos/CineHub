@@ -1,16 +1,34 @@
 import { useNavigate } from "react-router";
 import { ImageCard } from "./ui/ImageCard";
-import { ArrowLeft, Play, Film, Calendar, Timer, TriangleAlert } from "lucide-react";
+import {
+  ArrowLeft,
+  Play,
+  Film,
+} from "lucide-react";
 import { MediaCarousel } from "./MediaCarousel";
-import { dateFormat, runtimeFormat, yearFormat, } from "../utils/dateTimeFormat";
+import {
+  currencyFormat,
+  dateFormat,
+} from "../utils/dateTimeFormat";
 import { TrailerModal } from "./ui/TrailerModal";
 import { useState } from "react";
 import { ScrollToTop } from "./ui/ScrollToTop";
-import { LittleRatingRing } from "./ui/LittleRatingRing"
+import { BigRatingRing } from "./ui/BigRatingRing";
+import { DetailStatGrid } from "./DetailStatGrid";
 
 export const MovieDetails = ({ details }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const navigate = useNavigate();
+
+  const statsData = {
+    budget: details.budget,
+    boxOffice: details.boxOffice,
+    releaseYear: details.releaseDate,
+    runtime: details.runtime,
+    popularity: details.popularity,
+  };
+
+  // TODO -> Refactore: Rever o que pode ser componente
 
   return (
     <div className="min-h-screen">
@@ -28,15 +46,16 @@ export const MovieDetails = ({ details }) => {
 
         <div className="relative h-full max-w-7xl mx-auto px-6 sm:px-10 lg:px-8">
           <button
-            onClick={() => { navigate(-1); }}
-            className="inline-flex items-center gap-2 text-gray-900 dark:text-white hover:text-[#fbbf24] transition-colors py-6 mb-4 cursor-pointer"
+            onClick={() => {
+              navigate(-1);
+            }}
+            className="inline-flex items-center gap-2 text-sm sm:text-base text-white hover:text-[#fbbf24] transition-colors py-4 sm:py-6 mb-2 sm:mb-4 cursor-pointer"
           >
-            <ArrowLeft className="w-5 h-5" />
+            <ArrowLeft className="w-4 h-4 sm:w-5 sm:h-5" />
             Voltar
           </button>
 
           <div className="flex flex-col md:flex-row gap-8 items-center h-[calc(100%-8rem)]">
-            {/* Poster */}
             <div className="w-64 shrink-0 hidden md:block">
               <div className="relative overflow-hidden rounded-xl aspect-2/3 bg-gray-500/10 shadow-2xl ring-1 ring-white/10">
                 <ImageCard
@@ -46,13 +65,13 @@ export const MovieDetails = ({ details }) => {
                 />
               </div>
             </div>
-            {/* Info */}
-            <div className="flex-1 pb-4">
-              <h1 className="text-3xl sm:text-5xl font-bold mb-4 text-white">
+
+            <div className="flex-1 pb-2 sm:pb-4">
+              <h1 className="text-3xl sm:text-5xl font-bold mb-6 text-white">
                 {details.title}
               </h1>
 
-              <div className="flex flex-wrap gap-2 mb-4">
+              <div className="flex flex-wrap gap-2 mb-6">
                 {details.genres &&
                   details.genres.map((g) => (
                     <span
@@ -74,7 +93,7 @@ export const MovieDetails = ({ details }) => {
                 </p>
               )}
 
-              <div className="flex flex-wrap gap-4 mb-8">
+              <div className="flex flex-wrap gap-4 mb-6">
                 <button
                   onClick={() => setIsModalOpen(true)}
                   className={`flex items-center gap-2 bg-[#fbbf24] hover:bg-[#f59e0b] text-black px-8 py-3 rounded-lg font-medium transition-colors ${details.video && "cursor-pointer"}`}
@@ -93,61 +112,70 @@ export const MovieDetails = ({ details }) => {
                   />
                 )}
               </div>
+              {/* <ProviderBadges providers={details.providers} /> */}
             </div>
           </div>
         </div>
       </div>
 
-      <main className="max-w-6xl mx-auto px-4 sm:px-6 py-12 space-y-16">
-        <section className="grid place-content-center grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 px-4 md:px-6">
-          {[
-            { icon: LittleRatingRing, label: "Avaliação", value: `${details.rating} / 10`, sub: `${details.votes} votos` },
-            { icon: Timer, label: "Duração", value: runtimeFormat(details.runtime), },
-            { icon: TriangleAlert, label: "Classificação Indicativa", value: `${details.contentRating ? details.contentRating.release_dates[0].certification : "Não Informado"}`},
-            { icon: Calendar, label: "Ano De Lançamento", value: yearFormat(details.releaseDate) },
-          ].map(({ icon: Icon, label, value, sub }) => (
-            <div key={label}
-              className="bg-[#141414] border border-white/6 rounded-2xl px-4 py-4 flex items-center gap-4">
-              <div className="bg-[#fbbf24]/10 rounded-xl p-2 shrink-0">
-                <Icon className="w-4 h-4 text-[#fbbf24]" value={details.rating} />
-              </div>
-              <div>
-                <p className="text-xs uppercase text-gray-400">{label}</p>
-                <p className="text-sm font-semibold text-white">{value}</p>
-                <p className="text-xs text-gray-400">{sub}</p>
-              </div>
-            </div>
-          ))}
-        </section>
+      <main className="max-w-6xl mx-auto px-2 sm:px-6 py-12 space-y-16">
+        
+        <DetailStatGrid stats={statsData} />
 
-        <section className="bg-[#141414] border border-white/6 rounded-2xl p-6 md:p-8 mx-4 sm:mx-6">
-          <div className="flex items-center gap-2 mb-6">
-            <Film className="w-4 h-4 text-[#fbbf24]" />
-            <h2 className="text-sm font-semibold text-white uppercase tracking-wider">
-              Ficha Técnica
-            </h2>
+        <section className="flex flex-wrap gap-4 md:gap-6 justify-center mx-2 sm:mx-4 md:mx-6">
+          <div className="flex-1 bg-[#141414] border border-white/6 rounded-2xl p-4 sm:p-6 mx-2 flex flex-col items-center justify-center gap-2 min-w-56">
+            <BigRatingRing value={details.rating} />
+            <p className="text-sm text-gray-400 text-center">
+              Nota média baseada em
+              <br />
+              {details.votes} avaliações
+            </p>
           </div>
-          <div className="grid sm:grid-cols-2 md:grid-cols-4 gap-x-8 gap-y-5">
-            {[
-              { label: "Diretor", value: details.director?.name },
-              { label: "Roteiro", value: details.screenplay?.name || "Não Informado" },
-              {
-                label: "Data de lançamento",
-                value: dateFormat(details.releaseDate),
-              },
-              { label: "País de origem", value: details.country },
-              { label: "Idioma original", value: details.language },
-              { label: "Orçamento", value: details.budget },
-              { label: "Bilheteria", value: details.boxOffice },
-              { label: "Estúdio(s)", value: details.productionCompanies },
-            ].map(({ label, value }) => (
-              <div key={label}>
-                <p className="text-[11px] uppercase tracking-wider text-gray-400 mb-1">
-                  {label}
-                </p>
-                <p className="text-sm font-medium text-white ">{value}</p>
-              </div>
-            ))}
+
+          <div className="flex-2 bg-[#141414] border border-white/6 rounded-2xl py-6 px-4 sm:px-6 mx-2 min-w-fit md:min-w-xl">
+            <div className="flex items-center gap-2 mb-6">
+              <Film className="w-4 h-4 text-[#fbbf24]" />
+              <h3 className="text-sm font-semibold text-white uppercase tracking-wider">
+                Ficha técnica
+              </h3>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-3 sm:gap-x-7 gap-y-3">
+              {[
+                { label: "Diretor", value: details.director?.name },
+                {
+                  label: "Roteiro",
+                  value: details.screenplay?.name || "Não Informado",
+                },
+                { label: "País de origem", value: details.country },
+                { label: "Idioma original", value: details.language },
+                { label: "Orçamento", value: currencyFormat(details.budget) },
+                {
+                  label: "Bilheteria",
+                  value: currencyFormat(details.boxOffice),
+                },
+                {
+                  label: "Data de lançamento",
+                  value: dateFormat(details.releaseDate),
+                },
+                {
+                  label: "Classificação indicativa",
+                  value: details.contentRating.rating
+                    ? details.contentRating.rating
+                    : "Não Informado",
+                },
+                { label: "Estúdio", value: details.productionCompanies },
+              ].map(({ label, value }) => (
+                <div
+                  key={label}
+                  className={`flex items-center justify-between border-b border-white/5 pb-2 text-xs sm:text-sm`}
+                >
+                  <span className="text-gray-400">{label}</span>
+                  <span className={`px-3 py-1 rounded-full font-semibold`}>
+                    {value}
+                  </span>
+                </div>
+              ))}
+            </div>
           </div>
         </section>
 
@@ -173,9 +201,11 @@ export const MovieDetails = ({ details }) => {
                   />
                 </div>
 
-                <p className="text-sm font-medium text-white">{actor.name}</p>
+                <p className="text-sm font-medium text-white px-2">
+                  {actor.name}
+                </p>
 
-                <p className="text-xs text-gray-400">{actor.role}</p>
+                <p className="text-xs text-gray-400 px-2">{actor.role}</p>
               </div>
             ))}
           </div>

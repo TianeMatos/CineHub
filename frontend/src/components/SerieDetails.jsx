@@ -5,15 +5,13 @@ import {
   Calendar,
   ChevronDown,
   Film,
-  MonitorPlay,
+  PenLine,
   Play,
-  ThumbsUp,
   TrendingUp,
   Tv,
-  Users,
 } from "lucide-react";
 import { MediaCarousel } from "./MediaCarousel";
-import { dateFormat, runtimeFormat, yearFormat } from "../utils/dateTimeFormat";
+import { dateFormat, yearFormat } from "../utils/dateTimeFormat";
 import { BigRatingRing } from "./ui/BigRatingRing";
 import { EpisodeRow } from "./ui/EpisodeRow";
 import { useFetchMedia } from "../hooks/useFetchMedia";
@@ -27,7 +25,7 @@ import { ProviderBadges } from "./ui/ProviderBadges";
 export function SeriesDetails({ details }) {
   const [activeSeason, setActiveSeason] = useState(1);
   const [seasonDropdownOpen, setSeasonDropdownOpen] = useState(false);
-  const [liked, setLiked] = useState(false);
+  // const [liked, setLiked] = useState(false);
   const [episodesOpen, setEpisodesOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const navigate = useNavigate();
@@ -91,8 +89,9 @@ export function SeriesDetails({ details }) {
                       {g.name}
                     </span>
                   ))}
+
                 <span
-                  className={`text-xs px-3 py-1 rounded-full flex items-center gap-1.5 border ${
+                  className={`text-xs font-bold px-3 py-1 rounded-full flex items-center gap-1.5 border ${
                     details.status === "Returning Series"
                       ? "bg-green-800/75 border-green-300/65 text-green-300"
                       : "bg-orange-800/75 border-orange-300/65 text-white/80"
@@ -107,12 +106,12 @@ export function SeriesDetails({ details }) {
                 </span>
               </div>
 
-              <p className="text-white text-sm sm:text-lg mb-5 max-w-2xl leading-relaxed">
+              <p className="text-white text-sm sm:text-lg mb-4 max-w-2xl leading-relaxed">
                 {details.overview}
               </p>
 
               {details.tagline && (
-                <p className="mb-8 text-sm sm:text-lg italic text-[#fbbf24]">
+                <p className="mb-6 text-sm sm:text-lg italic text-[#fbbf24]">
                   "{details.tagline}"
                 </p>
               )}
@@ -120,7 +119,7 @@ export function SeriesDetails({ details }) {
               <div className="flex flex-wrap gap-3 mb-4 sm:mb-8">
                 <button
                   onClick={() => setIsModalOpen(true)}
-                  className={`flex items-center gap-2 bg-[#fbbf24] hover:bg-[#f59e0b] text-black sm:text-base px-4 sm:px-8 py-2.5 sm:py-3 rounded-lg font-medium transition-colors ${details.video && "cursor-pointer"}`}
+                  className={`flex items-center gap-2 text-xs sm:text-base px-3 sm:px-4 py-3 sm:py-4 rounded-lg font-medium transition-colors ${details.video ? "bg-[#fbbf24] hover:bg-[#f59e0b] text-black cursor-pointer" : "bg-gray-400 text-black"}`}
                 >
                   <Play className="w-4 w-sm-5 h-4 h-sm-5 fill-black" />
                   {details.video ? "Assistir Vídeo" : "Sem Vídeo Disponível"}
@@ -135,7 +134,7 @@ export function SeriesDetails({ details }) {
                 )}
 
                 {/* Not Implemented Yet  */}
-                <button
+                {/* <button
                   onClick={() => setLiked((v) => !v)}
                   className={`flex items-center gap-2 px-5 py-3.5 rounded-xl text-sm font-medium border transition-colors ${liked ? "bg-[#fbbf24]/15 border-[#fbbf24]/30 text-[#fbbf24]" : "bg-white/8 border-white/12 text-white/80 hover:bg-white/12"}`}
                 >
@@ -143,7 +142,7 @@ export function SeriesDetails({ details }) {
                     className={`w-4 h-4 ${liked ? "fill-[#fbbf24]" : ""}`}
                   />
                   {liked ? "Curtido" : "Curtir"}
-                </button>
+                </button> */}
               </div>
               <ProviderBadges providers={details.providers} />
             </div>
@@ -152,19 +151,17 @@ export function SeriesDetails({ details }) {
       </div>
 
       <main className="max-w-6xl mx-auto px-4 sm:px-6 py-12 space-y-16">
-
-        <section className="grid place-content-center grid-cols-1 sm:grid-cols-4 gap-4 px-4 md:px-6">
+        <section className="flex flex-wrap justify-evenly items-center gap-4 px-4 md:px-6">
           {[
             {
-              icon: Users,
-              label: "Elenco",
-              value: `${details.cast.length} atores`,
-              sub: "principais",
+              icon: Calendar,
+              label: "Ano De Lançamento",
+              value: yearFormat(details.releaseDate),
             },
             {
               icon: Tv,
               label: "Episódios",
-              value: totalEps,
+              value: `${totalEps} ep.`,
               sub: `em ${details.numberSeasons} temporadas`,
             },
             {
@@ -174,14 +171,14 @@ export function SeriesDetails({ details }) {
               sub: "Índice do TMDB",
             },
             {
-              icon: MonitorPlay,
-              label: "Emissora",
-              value: `${details.network}`,
+              icon: PenLine,
+              label: "Criador(es)",
+              value: details?.createdBy ?? "Não Informado",
             },
           ].map(({ icon: Icon, label, value, sub }) => (
             <div
               key={label}
-              className="bg-[#141414] border border-white/6 rounded-2xl px-5 py-4 flex items-center gap-4"
+              className="bg-[#141414] border border-white/6 rounded-2xl px-5 py-4 flex items-center gap-6 w-full sm:w-60 max-h-20"
             >
               <div className="bg-[#fbbf24]/10 rounded-xl p-2.5 shrink-0">
                 <Icon className="w-5 h-5 text-[#fbbf24]" />
@@ -195,9 +192,8 @@ export function SeriesDetails({ details }) {
           ))}
         </section>
 
-        <section className="grid grid-cols-1 sm:grid-cols-3 gap-6 place-content-center mx-4 sm:mx-6">
-          {/* Score */}
-          <div className="bg-[#141414] border border-white/6 rounded-2xl p-4 sm:p-6 mx-2 flex flex-col items-center justify-center gap-2">
+        <section className="flex flex-wrap gap-4 md:gap-6 justify-center mx-2 sm:mx-4 md:mx-6">
+          <div className="flex-1 bg-[#141414] border border-white/6 rounded-2xl p-4 sm:p-6 mx-2 flex flex-col items-center justify-center gap-2 min-w-56">
             <BigRatingRing value={details.rating} />
             <p className="text-sm text-gray-400 text-center">
               Nota média baseada em
@@ -206,25 +202,27 @@ export function SeriesDetails({ details }) {
             </p>
           </div>
 
-          <div className="col-span-1 sm:col-span-2 bg-[#141414] border border-white/6 rounded-2xl p-4 sm:p-6 mx-2">
+          <div className="flex-2 bg-[#141414] border border-white/6 rounded-2xl py-6 px-4 sm:px-6 mx-2 min-w-fit md:min-w-xl">
             <div className="flex items-center gap-2 mb-6">
               <Film className="w-4 h-4 text-[#fbbf24]" />
               <h3 className="text-sm font-semibold text-white uppercase tracking-wider">
                 Ficha técnica
               </h3>
             </div>
-            <div className="grid sm:grid-cols-2 gap-x-8 gap-y-3">
+            {console.log(details.createdBy)}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-3 sm:gap-x-7 gap-y-3">
               {[
-                { label: "Criador", value: details.crew[0].name },
                 {
                   label: "Duração",
-                  value: `${details.type === "movie" ? runtimeFormat(details.runtime) : Math.round(details.episodeRunTime) + " por episódio"}`,
+                  value: `${Math.round(details.episodeRunTime) + "min por episódio"}`,
                 },
                 { label: "País de origem", value: details.country },
                 { label: "Idioma original", value: details.language },
                 {
                   label: "Classificação indicativa",
-                  value: details.contentRating.rating ? details.contentRating.rating : "Não Informado",
+                  value: details.contentRating.rating
+                    ? details.contentRating.rating
+                    : "Não Informado",
                 },
                 {
                   label: "Status",
@@ -239,15 +237,14 @@ export function SeriesDetails({ details }) {
                   label: "Último episódio",
                   value: dateFormat(details.lastAirDate),
                 },
+                { label: "Emissora", value: details.network },
               ].map(({ label, value }) => (
                 <div
                   key={label}
-                  className="flex justify-between border-b border-white/5 pb-2"
+                  className={`flex items-baseline justify-between border-b border-white/5 text-sm py-2 my-1`}
                 >
-                  <span className="text-sm text-gray-400">{label}</span>
-                  <span className="text-sm text-white font-medium text-right ml-4">
-                    {value}
-                  </span>
+                  <span className="text-gray-400 font-medium">{label}</span>
+                  <span className="rounded-full font-semibold">{value}</span>
                 </div>
               ))}
             </div>
@@ -276,9 +273,11 @@ export function SeriesDetails({ details }) {
                   />
                 </div>
 
-                <p className="text-sm font-medium text-white">{actor.name}</p>
+                <p className="text-sm font-medium text-white px-2">
+                  {actor.name}
+                </p>
 
-                <p className="text-xs text-gray-400">{actor.role}</p>
+                <p className="text-xs text-gray-400 px-2">{actor.role}</p>
               </div>
             ))}
           </div>

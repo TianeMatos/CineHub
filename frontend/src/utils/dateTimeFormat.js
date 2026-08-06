@@ -16,3 +16,7 @@ export const yearFormat = (date) => {
   
   return dateFormated;
 }
+
+export const currencyFormat = (valor) => {
+  return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(valor);
+};

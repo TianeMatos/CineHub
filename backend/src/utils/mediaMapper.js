@@ -33,20 +33,27 @@ const toFullDetailsMovie = (media) => {
     language: media.original_language.toString().toUpperCase(),
     country: media.origin_country.join(", "),
     homepage: media.homepage,
+
     // Imagens
     posterUrl: media.poster_path ? `${POSTER_BASE_URL}${media.poster_path}` : null,
     backdropUrl: media.backdrop_path ? `${BACKDROP_BASE_URL}${media.backdrop_path}` : null,
+
     // Avaliações
     rating: Number(media.vote_average.toFixed(1)),
     votes: media.vote_count,
+    popularity: media.popularity,
+
     // Dinheiro
-    budget: new Intl.NumberFormat('pt-BR', { style: "currency", currency: "BRL" }).format(media.budget),
-    boxOffice: new Intl.NumberFormat('pt-BR', { style: "currency", currency: "BRL" }).format(media.revenue),
-    // Produção
-    productionCompanies: media.production_companies.map((pc) => pc.name).join(", "),
-    // Dirretor e Escritor
+    budget: media.budget,
+    boxOffice: media.revenue,
+
+    // Produtora
+    productionCompanies: media.production_companies[0].name,
+
+    // Diretor e Escritor
     director: media.credits.crew.find((c) => c.job === "Director"),
     screenplay: media.credits.crew.find((c) => c.job === "Screenplay" || c.job === "Original Story" || c.job === "Writer"),
+
     // Elenco
     cast: media.credits.cast.slice(0, 10).map((actor) => ({
       id: actor.id,
@@ -56,6 +63,7 @@ const toFullDetailsMovie = (media) => {
         ? `${PROFILE_BASE_URL}${actor.profile_path}`
         : null,
     })),
+
     // Trailer
     video:
       media.videos.results.find(
@@ -106,7 +114,7 @@ const toFullDetailsSeries = (media) => ({
   // Episódios
   numberEpisodes: media.number_of_episodes,
   numberSeasons: media.number_of_seasons,
-  episodeRunTime: media.episode_run_time,
+  episodeRunTime: media.episode_run_time[0] || media.last_episode_to_air.runtime,
 
   // Temporadas
   seasons: media.seasons.map((season) => ({
@@ -141,7 +149,7 @@ const toFullDetailsSeries = (media) => ({
   homepage: media.homepage,
 
   // Criadores
-  crew: media.created_by,
+  createdBy: media.created_by?.map((p) => p.name).join(", "),
 
   // Elenco
   cast: media.credits.cast.slice(0, 10).map((actor) => ({
