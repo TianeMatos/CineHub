@@ -32,4 +32,6 @@ router.get('/:mediaType/:id/details', mediaController.mediaDetails);
 // GET /api/media/:id/:seasonNumber
 router.get('/:id/:seasonNumber', mediaController.serieSeasonDetails);
 
+router.get('/:mediaType/:id/trailer', mediaController.mediaTrailer);
+
 module.exports = router;

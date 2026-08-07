@@ -226,10 +226,10 @@ const getMediaVideos = async (mediaType, id) => {
     }
   });
 
-  const trailer = data?.results.length !== 0 ? data.results.sort((a, b) => b.published_at - a.published_at).slice(0, 10).find((video) => video.type === "Trailer" || video.type === "Teaser") : null;
+  const trailer = data?.results.length !== 0 ? data.results.sort((a, b) => new Date(a.published_at) - new Date(b.published_at)).find((video) => video.type === "Trailer" || video.type === "Teaser") : null;
 
   return trailer;
 }
 
 
-module.exports = { getPopular, getTrendings, getTopRated, getDiscover, getSearch, getGenreList, getMediaDetails, getSerieSeasonDetails }
+module.exports = { getPopular, getTrendings, getTopRated, getDiscover, getSearch, getGenreList, getMediaDetails, getSerieSeasonDetails, getMediaVideos }

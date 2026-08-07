@@ -179,22 +179,22 @@ const mediaController = {
     }
   },
 
-  // mediaTrailer: async (req, res, next) => {
-  //   const { mediaType, id } = req.params;
+  mediaTrailer: async (req, res, next) => {
+    const { mediaType, id } = req.params;
 
-  //   if (mediaType !== 'movie' && mediaType !== 'tv') {
-  //     return next(new AppError("Tipo de mídia inválido", 400));
-  //   }
+    if (mediaType !== 'movie' && mediaType !== 'tv') {
+      return next(new AppError("Tipo de mídia inválido", 400));
+    }
 
-  //   try {
-  //     const trailer = await getMediaVideos(mediaType, id);
+    try {
+      const trailer = await getMediaVideos(mediaType, id);
 
-  //     res.status(200).json(trailer);
-  //   } catch (error) {
-  //     console.log("Error: ", error);
-  //     next(error);
-  //   }
-  // },
+      res.status(200).json(trailer);
+    } catch (error) {
+      console.log("Error: ", error);
+      next(error);
+    }
+  },
 
 }
 
