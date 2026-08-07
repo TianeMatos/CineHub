@@ -129,8 +129,6 @@ const toFullDetailsSeries = (media) => ({
 
   // Idiomas
   language: media.original_language,
-  languages: media.languages,
-  spokenLanguages: media.spoken_languages,
 
   // Gêneros
   genres: media.genres,
@@ -206,7 +204,7 @@ const toSeasonDetails = (season) => {
 
       votes: episode.vote_count,
 
-      stillUrl: episode.still_path
+      stillPath: episode.still_path
         ? `${STILL_BASE_URL}${episode.still_path}`
         : null,
     })),

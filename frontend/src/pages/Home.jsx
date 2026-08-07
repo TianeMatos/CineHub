@@ -8,6 +8,7 @@ import { MediaSection } from "../components/MediaSection";
 // TODO -> FIX: trendings mistura filmes e séries mas o "Ver Todos" vai só pra /movies
 // TODO -> FIX: comprimento dos badges nas pages details 
 // TODO -> FIX: igualar a estrutura da page de filmes e series, deixar o layout mais estruturado
+// TODO -> FIX: melhorar o badge de status da serie
 
 export function Home() {
   const { loading, error, trendings, featuredMedia, popularMovies, popularSeries } = useHomeMedia();

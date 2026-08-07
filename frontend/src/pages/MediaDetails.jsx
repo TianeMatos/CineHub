@@ -1,9 +1,9 @@
 import { LoadingScreen } from "../components/ui/LoadingScreen";
 import { ErrorScreen } from "../components/ui/ErrorScreen";
 import { useParams } from "react-router";
-import { MovieDetails } from "../components/MovieDetails";
+import { MovieDetails } from "../components/details/MovieDetails";
 import { useMediaDetails } from "../hooks/useMediaDetails";
-import { SeriesDetails } from "../components/SerieDetails";
+import { SeriesDetails } from "../components/details/SerieDetails";
 
 export function MediaDetails() {
   const { mediaType, id } = useParams();
